@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Boldonse,Montserrat } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+import Header from "@/components/app/header";
+import Footer from "@/components/app/desktop-footer";
+import MobileFooter from "@/components/app/mobile-footer";
+const boldonse = Boldonse({
+  variable: "--next-font-boldonse",
+  weight: '400',
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const montserrat = Montserrat({
+  variable: "--next-font-montserrat",
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -25,9 +29,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${boldonse.variable} ${montserrat.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-screen w-full flex flex-col">
+        <Header />
+        {children}
+        <Footer/>
+        <MobileFooter/>
+      </body>
     </html>
   );
 }
