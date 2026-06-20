@@ -1,8 +1,9 @@
 import Image from "next/image";
 import img from "@/public/hero.png"
+import Link from "next/link";
 export default function ItemCard() {
     return(
-        <div className="lg:h-[540px] h-[280px] lg:w-[392px] w-[170px] flex flex-col items-start gap-3">
+        <Link href='/collections/product' className="lg:h-[540px] h-[280px] lg:w-[392px] w-[170px] flex flex-col items-start gap-3">
             <div className="lg:h-[438px] h-[220px] w-full overflow-hidden">
                <Image src={img} alt="" className="object-cover"/>
             </div>
@@ -18,6 +19,6 @@ export default function ItemCard() {
                     ))}
                 </div>
             </div>
-        </div>
+        </Link>
     )
 }
