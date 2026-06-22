@@ -3,6 +3,7 @@ import Logo from "../svg/logo";
 import Cart from "../svg/cart";
 import SearchBar from "../input/search-bar";
 import MobileMenu from "./mobile-menu";
+import CollectionButton from "./collection-button";
 
 export default function Header() {
     return (
@@ -14,11 +15,11 @@ export default function Header() {
                 </svg>
             </div>
             <Link href='/'><Logo/></Link>
-            <nav className="text-black gap-12 font-montserrat hidden lg:flex">
+            <nav className="text-black gap-12 font-montserrat hidden lg:flex items-center h-full ">
                 <Link href="/">Home</Link>
-                <Link href="/collections">Collections</Link>
+                <CollectionButton/>
                 <Link href="/contactus">Contact Us</Link>
-                <Link href="/ourstroy">Our Stroy</Link>
+                <Link href="/ourstory">Our Stroy</Link>
             </nav>
             <SearchBar/>
             <Cart/>

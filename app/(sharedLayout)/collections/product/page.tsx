@@ -5,7 +5,7 @@ import ItemCard from "@/components/app/item-card"
 
 export default function Product() {
     return (
-        <main className="flex flex-col gap-16 lg:mt-20 mt-12">
+        <>
             <section className="w-full lg:h-[calc(100vh-80px)]">
                 <div className="flex flex-col lg:flex-row items-start justify-center lg:gap-16 gap-6 lg:h-[calc(100vh-80px)]  lg:px-10 px-5 pb-8">
                     <div className="flex relative w-full h-[45vh] lg:h-full lg:w-fit">
@@ -70,6 +70,6 @@ export default function Product() {
                     </div>
                 </div>
             </section>
-        </main>
+        </>
     )
 }

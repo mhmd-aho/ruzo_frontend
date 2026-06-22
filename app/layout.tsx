@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Boldonse,Montserrat } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/app/header";
-import Footer from "@/components/app/desktop-footer";
-import MobileFooter from "@/components/app/mobile-footer";
 const boldonse = Boldonse({
   variable: "--next-font-boldonse",
   weight: '400',
@@ -32,10 +29,8 @@ export default function RootLayout({
       className={`${boldonse.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-screen w-full flex flex-col">
-        <Header />
+
         {children}
-        <Footer/>
-        <MobileFooter/>
       </body>
     </html>
   );

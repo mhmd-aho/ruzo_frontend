@@ -7,7 +7,7 @@ export default function FilterDisplay({filterName,options}: {filterName: string,
         <div className={`border border-primary ${showFilter?'bg-white':'bg-primary'} w-full p-4 flex flex-col gap-5`}>
                     <div className="flex justify-between items-center w-full">
                         <h3 className={`font-bold ${showFilter?'text-primary':'text-white'}`}>{filterName}</h3>
-                        <button onClick={() => setShowFilter(!showFilter)}>{showFilter ? <Minus/> : <Plus/>}</button>
+                        <button onClick={() => setShowFilter(!showFilter)}>{showFilter ? <Minus fill="primary"/> : <Plus fill="white"/>}</button>
                     </div>
                     {
                         showFilter && (
