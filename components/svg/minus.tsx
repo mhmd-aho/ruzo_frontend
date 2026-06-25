@@ -5,7 +5,8 @@ export default function Minus({
 }){
     const color:Record<string,string> ={
         primary:'#731012',
-        black:'#0C0C0C'
+        black:'#0C0C0C',
+        white:'#FFFFFF',
     }
     return(
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

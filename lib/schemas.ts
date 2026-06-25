@@ -12,10 +12,14 @@ export type ColorType = {
     name: string;
     color_code:string;
 }
+export type SizeType = {
+    id: number;
+    name:string;
+}
 export type ProductVariantsSchema = ProductSchema & {
     id: number;
     product: number;
-    size: number;
+    size: SizeType;
     color: ColorType;
     quantity: number;
     

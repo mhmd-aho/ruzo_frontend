@@ -2,11 +2,12 @@ import Image from "next/image"
 import Minus from "@/components/svg/minus"
 import Plus from "@/components/svg/plus"
 import ItemCard from "@/components/app/item-card"
-import { ProductSchema } from "@/lib/schemas";
+import { ProductSchema,ProductVariantsSchema,ColorType,SizeType } from "@/lib/schemas";
 
 export default async function Product({params}: {params: Promise<{id: string}>}) {
     const {id} = await params;
     let product: ProductSchema | null = null;
+    let productVariants: ProductVariantsSchema[] = [];
     try{
         const res = await fetch(`${process.env.BACKEND_URL}products/${id}/`,{
             method: "GET",
@@ -23,11 +24,34 @@ export default async function Product({params}: {params: Promise<{id: string}>})
     }catch(err){
         console.log(err)
     }
+    try{
+        const res = await fetch(`${process.env.BACKEND_URL}products/${id}/variants/`,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            
+        })
+        const data = await res.json()
+        if(!res.ok){
+            throw new Error("Failed to fetch product variants")
+        }
+        productVariants = data;
+    }catch(err){
+        console.log(err)
+    }
+const uniqueColors = Array.from(
+        new Map(productVariants.map(v => [v.color.id, v.color])).values()
+    );
+    
+    const uniqueSizes = Array.from(
+        new Map(productVariants.map(v => [v.size.id, v.size])).values()
+    );
     return (
         <>
             <section className="w-full lg:h-[calc(100vh-80px)]">
                 <div className="flex flex-col lg:flex-row items-start justify-center lg:gap-16 gap-6 lg:h-[calc(100vh-80px)]  lg:px-10 px-5 pb-8">
-                    <div className="flex relative w-full h-[45vh] lg:h-full lg:w-fit">
+                    <div className="flex relative w-full h-[60vh] lg:h-full lg:w-fit">
                         <div className="flex-col gap-3 hidden lg:flex">
                             <div className="bg-black h-28 w-18"/>
                             <div className="bg-black h-28 w-18"/>
@@ -48,17 +72,17 @@ export default async function Product({params}: {params: Promise<{id: string}>})
                         <div className="flex flex-col lg:gap-3 gap-1">
                             <p className="font-bold text-black">Color: <span className="text-mid ml-1">Selected color</span></p>
                             <div className="flex gap-3">
-                                <div className="size-6 bg-black rounded-full"></div>
-                                <div className="size-6 bg-black rounded-full"></div>
-                                <div className="size-6 bg-black rounded-full"></div>
+                                {uniqueColors.map((color: ColorType) => (
+                                    <button style={{backgroundColor: color.color_code}} key={color.id} className='lg:size-7 size-5 border-2 border-mid rounded-full hover:scale-110 transition-all duration-300 ease-in-out cursor-pointer'></button>
+                                ))}
                             </div>
                         </div>
                         <div className="flex flex-col lg:gap-3 gap-1">
                             <p className="font-bold text-black">Size: <span className="text-mid ml-1">Selected size</span></p>
                             <div className="flex gap-3">
-                                <div className="size-12 bg-black"></div>
-                                <div className="size-12 bg-black"></div>
-                                <div className="size-12 bg-black"></div>
+                                {uniqueSizes.map((size: SizeType) => (
+                                    <button key={size.id} className="border border-mid lg:size-12 size-10">{size.name}</button>
+                                ))}
                             </div>
                         </div>
                         <div className="flex flex-col lg:gap-3 gap-1">

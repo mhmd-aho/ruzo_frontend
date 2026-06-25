@@ -18,16 +18,18 @@ export default function Filters() {
                         <Exit fill="primary"/>
                     </button>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-4">
                     <p className="bg-primary w-fit flex items-center gap-2 p-2 text-white ">
                         Selected filter
                         <button><Exit fill="white" /></button>
                     </p>
-                    <div className="flex justify-between">
-                        <button className="underline">clear all</button>
-                        <button className="">Apply</button>
+                    <div className="flex justify-between lg:justify-end lg:items-end max-lg:px-5">
+                        <button  className="lg:bg-primary w-fit py-2 px-5 lg:text-muted text-mid self-end text-sm">Clear All Filters</button>
+                        <button className="lg:hidden bg-primary text-white py-2 px-5  text-sm" onClick={() => setShowFilters(!showFilters)}>Apply Filters</button>
                     </div>
+
                 </div>
+                <FilterDisplay filterName="Sort By" options={["Best Seller","Price: Low To Height","Price: Height To Low"]}/>
                 <FilterDisplay filterName="Size" options={["XS/US (0-4)","S/US (4-6)","M/US (6-10)","L/US (10-12)","XL/US (14-16)"]}/>
                 <FilterDisplay filterName="Color" options={["Black","White","Gray","Blue","Red"]}/>
                 <FilterDisplay filterName="Collection" options={["In stock","Jeans","Sets","Sets","Skirts"]}/>

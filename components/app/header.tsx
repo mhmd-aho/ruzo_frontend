@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Logo from "../svg/logo";
-import Cart from "../svg/cart";
+
 import SearchBar from "../input/search-bar";
 import MobileMenu from "./mobile-menu";
 import CollectionButton from "./collection-button";
+import Cart from "./cart";
 
 export default function Header() {
     return (
