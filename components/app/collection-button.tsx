@@ -30,12 +30,12 @@ export default function CollectionButton() {
                     <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="flex flex-col items-start justify-start gap-6 bg-white w-full h-72 lg:p-9 p-3 overflow-auto">
                         <h3 className="lg:text-xl text-sm text-primary font-bold max-lg:hidden">Shop by Category</h3>
                         <div className="flex flex-wrap max-lg:flex-col justify-start max-lg:items-start gap-8 items-center">
-                            <Link className="text-mid text-sm lg:text-xl " href='/collections'>All Collections</Link>
-                            <Link className="text-mid text-sm lg:text-xl " href='/collections'>In Stock</Link>
-                            <Link className="text-mid text-sm lg:text-xl " href='/collections'>Jeans</Link>
-                            <Link className="text-mid text-sm lg:text-xl " href='/collections'>Sets</Link>
-                            <Link className="text-mid text-sm lg:text-xl " href='/collections'>Skirts</Link>
-                            <Link className="text-mid text-sm lg:text-xl " href='/collections'>In Stock</Link>
+                            <Link onClick={() => setIsHovered(false)} className="text-mid text-sm lg:text-xl " href='/collections'>All Collections</Link>
+                            <Link onClick={() => setIsHovered(false)} className="text-mid text-sm lg:text-xl " href='/collections'>In Stock</Link>
+                            <Link onClick={() => setIsHovered(false)} className="text-mid text-sm lg:text-xl " href='/collections'>Jeans</Link>
+                            <Link onClick={() => setIsHovered(false)} className="text-mid text-sm lg:text-xl " href='/collections'>Sets</Link>
+                            <Link onClick={() => setIsHovered(false)} className="text-mid text-sm lg:text-xl " href='/collections'>Skirts</Link>
+                            <Link onClick={() => setIsHovered(false)} className="text-mid text-sm lg:text-xl " href='/collections'>In Stock</Link>
                             <Link className="text-mid text-sm lg:text-xl " href='/collections'>Jeans</Link>
                             <Link className="text-mid text-sm lg:text-xl " href='/collections'>Sets</Link>
                             <Link className="text-mid text-sm lg:text-xl " href='/collections'>Skirts</Link>

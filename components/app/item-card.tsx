@@ -1,7 +1,8 @@
 import Image from "next/image";
 import img from "@/public/hero.png"
 import Link from "next/link";
-import { ProductSchema, ColorType, ProductVariantsSchema } from "@/lib/schemas";
+import { ProductSchema, ProductVariantsSchema,MediaType } from "@/lib/schemas";
+import { Suspense } from "react";
 export default async function ItemCard(product: ProductSchema) {
     let variants:ProductVariantsSchema[] = [];
     try{
@@ -22,28 +23,38 @@ export default async function ItemCard(product: ProductSchema) {
     }
     const colors = Array.from(new Map(variants.map((v: ProductVariantsSchema) => [v.color.name, v.color.color_code])).values()).filter(Boolean);
     let image:string = '';
+    const firstVariant = variants[0];
+    const firstSize = firstVariant?.size;
+    const firstColor = firstVariant?.color;
     try{
-        const res = await fetch(`${process.env.BACKEND_URL}products/${product.id}/media/`,{
+        const res = await fetch(`${process.env.BACKEND_URL}products/${firstVariant?.id}/media/`,{
             headers: {
                 "Content-Type": "application/json",
             },
             cache: "no-store",
         })
-        const data = await res.json();
+        const data:MediaType[] = await res.json();
         if(!res.ok){
             throw new Error("Failed to fetch product images")
         }
         if(data.length > 0){
             image = data[0].media_url
+            console.log(image)
         }
     }
     catch(err){
         console.log(err)
     }
+
     return(
-        <Link href={`/collections/product/${product.id}`} className="lg:h-[540px] h-[280px] lg:w-[392px] w-[170px] flex flex-col items-start gap-3">
+        <Link href={`/collections/product/${product.id}?color=${firstColor?.name}&size=${firstSize?.name}`} className="lg:h-[540px] h-[280px] lg:w-[392px] w-[170px] flex flex-col items-start gap-3">
             <div className="lg:h-[438px] h-[220px] w-full overflow-hidden relative">
-               <Image fill src={`https://3yrpgg4xvr.ucarecd.net/${image}` || img} alt="product image" className="object-cover"/>
+                {
+                    image? 
+                    <Suspense fallback={<div className="size-full bg-muted animate-pulse"/>}>
+                        <Image fill src={image}  alt="product image" className="object-cover object-bottom"/>
+                    </Suspense>
+                : <div className="size-full bg-muted animate-pulse"/> }
             </div>
             <div className="flex-1 w-full flex flex-col gap-2">
                 <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center w-full">

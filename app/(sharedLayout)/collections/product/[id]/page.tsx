@@ -1,106 +1,134 @@
 import Image from "next/image"
-import Minus from "@/components/svg/minus"
-import Plus from "@/components/svg/plus"
 import ItemCard from "@/components/app/item-card"
-import { ProductSchema,ProductVariantsSchema,ColorType,SizeType } from "@/lib/schemas";
+import { ProductSchema, ProductVariantsSchema, MediaType } from "@/lib/schemas";
+import AddToCartForm from "@/components/app/add-to-cart-form";
+import { Suspense } from "react";
 
-export default async function Product({params}: {params: Promise<{id: string}>}) {
-    const {id} = await params;
+export default async function Product({
+    params,
+    searchParams
+}: {
+    params: Promise<{ id: string }>,
+    searchParams: Promise<{ color?: string, size?: string }> // Marked as optional since they won't exist on first load
+}) {
+    // 1. Await the asynchronous params from Next.js 15+ routing
+    const { id } = await params;
+    const { color, size } = await searchParams;
+
     let product: ProductSchema | null = null;
     let productVariants: ProductVariantsSchema[] = [];
-    try{
-        const res = await fetch(`${process.env.BACKEND_URL}products/${id}/`,{
+    let colorVariants: ProductVariantsSchema[] = [];
+    let images: string[] = [];
+
+    // 2. Fetch primary product data
+    try {
+        const res = await fetch(`${process.env.BACKEND_URL}products/${id}/`, {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            
-        })
-        const data = await res.json()
-        if(!res.ok){
-            throw new Error("Failed to fetch product")
-        }
+            headers: { "Content-Type": "application/json" },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error("Failed to fetch product");
         product = data;
-    }catch(err){
-        console.log(err)
+    } catch (err) {
+        console.log("Product Fetch Error:", err);
     }
-    try{
-        const res = await fetch(`${process.env.BACKEND_URL}products/${id}/variants/`,{
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            
-        })
-        const data = await res.json()
-        if(!res.ok){
-            throw new Error("Failed to fetch product variants")
+
+    // 3. Fetch all variants belonging to this product (to extract unique available colors)
+    if (product?.id) {
+        try {
+            const res = await fetch(`${process.env.BACKEND_URL}products/${product.id}/variants/`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error("Failed to fetch product variants");
+            productVariants = data;
+        } catch (err) {
+            console.log("All Variants Fetch Error:", err);
         }
-        productVariants = data;
-    }catch(err){
-        console.log(err)
     }
-const uniqueColors = Array.from(
+
+    // 4. Fetch specific variants filtered by the selected color URL parameter
+    // Defensive check: Only fetch if 'color' exists in URL to avoid passing `undefined` to the API
+    if (product?.id && color) {
+        try {
+            const res = await fetch(`${process.env.BACKEND_URL}products/${product.id}/variants/?color=${color}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error("Failed to fetch filtered color variants");
+            colorVariants = data;
+        } catch (err) {
+            console.log("Color Variants Fetch Error:", err);
+        }
+    }
+
+    // 5. Fetch media/images associated with the selected color variant
+    if (colorVariants.length > 0) {
+        try {
+            const res = await fetch(`${process.env.BACKEND_URL}products/${colorVariants[0].id}/media/`, {
+                headers: { "Content-Type": "application/json" },
+                cache: "no-store",
+            });
+            const data: MediaType[] = await res.json();
+            if (!res.ok) throw new Error("Failed to fetch product images");
+            if (data.length > 0) {
+                images = data.map((d) => d.media_url);
+            }
+        } catch (err) {
+            console.log("Media Fetch Error:", err);
+        }
+    }
+
+    // 6. Map unique colors from all variants to render the color selector circles
+    const colors = Array.from(
         new Map(productVariants.map(v => [v.color.id, v.color])).values()
     );
-    
-    const uniqueSizes = Array.from(
-        new Map(productVariants.map(v => [v.size.id, v.size])).values()
+
+    // 7. Map unique sizes available *specifically* for the selected color
+    const sizes = Array.from(
+        new Map(colorVariants?.map(v => [v.size.id, v.size])).values()
     );
+
+    // 8. Extract primary preview image fallback
+    const image = images.length > 0 ? images[0] : '';
+
     return (
         <>
             <section className="w-full lg:h-[calc(100vh-80px)]">
-                <div className="flex flex-col lg:flex-row items-start justify-center lg:gap-16 gap-6 lg:h-[calc(100vh-80px)]  lg:px-10 px-5 pb-8">
+                <div className="flex flex-col lg:flex-row items-start justify-center lg:gap-16 gap-6 lg:h-[calc(100vh-80px)] lg:px-10 px-5 pb-8">
+                    
+                    {/* Media Display Section */}
                     <div className="flex relative w-full h-[60vh] lg:h-full lg:w-fit">
+                        {/* Static Placeholder thumbnails */}
                         <div className="flex-col gap-3 hidden lg:flex">
-                            <div className="bg-black h-28 w-18"/>
-                            <div className="bg-black h-28 w-18"/>
-                            <div className="bg-black h-28 w-18"/>
-                            <div className="bg-black h-28 w-18"/>
+                            <div className="bg-black h-28 w-18" />
+                            <div className="bg-black h-28 w-18" />
+                            <div className="bg-black h-28 w-18" />
+                            <div className="bg-black h-28 w-18" />
                         </div>
-                        <Image
-                            width={430}
-                            height={573}
-                            src='https://3yrpgg4xvr.ucarecd.net/b06ea220-ca39-4a3e-9852-fc0c03ab54b9/-/preview/750x1000/'
-                            alt=""
-                            className="lg:w-[430px] lg:h-fit object-center object-cover"
-                        />
+                        {
+                            image ? (
+                                <Suspense fallback={<div className="size-full bg-muted animate-pulse" />}>
+                                    <Image
+                                        width={430}
+                                        height={573}
+                                        src={image}
+                                        alt={product?.name || "Product Image"}
+                                        className="lg:w-[430px] lg:h-fit object-center object-cover"
+                                    />
+                                </Suspense>
+                            ) : <div className="size-full bg-muted animate-pulse" />
+                        }
                     </div>
-                    <div className="lg:w-1/2 w-full flex flex-col lg:gap-9 gap-3">
-                        <h2 className="text-2xl lg:text-4xl font-boldonse">{product?.name}</h2>
-                        <p className="lg:text-2xl text-xl font-boldonse text-black">${product?.price}</p>
-                        <div className="flex flex-col lg:gap-3 gap-1">
-                            <p className="font-bold text-black">Color: <span className="text-mid ml-1">Selected color</span></p>
-                            <div className="flex gap-3">
-                                {uniqueColors.map((color: ColorType) => (
-                                    <button style={{backgroundColor: color.color_code}} key={color.id} className='lg:size-7 size-5 border-2 border-mid rounded-full hover:scale-110 transition-all duration-300 ease-in-out cursor-pointer'></button>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="flex flex-col lg:gap-3 gap-1">
-                            <p className="font-bold text-black">Size: <span className="text-mid ml-1">Selected size</span></p>
-                            <div className="flex gap-3">
-                                {uniqueSizes.map((size: SizeType) => (
-                                    <button key={size.id} className="border border-mid lg:size-12 size-10">{size.name}</button>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="flex flex-col lg:gap-3 gap-1">
-                            <p className="font-bold text-black">Quantity:</p>
-                            <div className="flex items-center justify-center border border-muted w-fit gap-5 self-start py-3 px-5">
-                                <button><Minus fill='black'/></button>
-                                <p>1</p>
-                                <button><Plus fill='black'/></button>
-                            </div>
-                        </div>
-                        <button className="bg-primary text-white w-full lg:h-14 h-12">Add to cart</button>
-                        <div className="flex flex-col gap-3">
-                            <p className="font-bold text-black">Description:</p>
-                            <p className="text-mid">{product?.description}</p>
-                        </div>
-                    </div>
+                    
+                    {/* Interactive Add to Cart Form */}
+                    {product && <AddToCartForm sizes={sizes} colors={colors} product={product} />}
                 </div>
             </section>
+            
+            {/* Recommendations Section */}
             <section className="lg:h-[calc(100vh-80px)] w-full lg:px-10 px-5 pt-8 pb-12">
                 <div className="flex flex-col gap-8">
                     <h2 className="text-2xl lg:text-4xl font-boldonse">You May Also Like</h2>

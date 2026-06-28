@@ -24,3 +24,8 @@ export type ProductVariantsSchema = ProductSchema & {
     quantity: number;
     
 }
+export type MediaType = {
+    id: number;
+    media_url:string;
+    product_variant:ProductVariantsSchema;
+}
