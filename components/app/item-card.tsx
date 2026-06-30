@@ -1,7 +1,7 @@
 import Image from "next/image";
 import img from "@/public/hero.png"
 import Link from "next/link";
-import { ProductSchema, ProductVariantsSchema,MediaType } from "@/lib/schemas";
+import { ProductSchema, ProductVariantsSchema,MediaSchema } from "@/lib/schemas";
 import { Suspense } from "react";
 export default async function ItemCard(product: ProductSchema) {
     let variants:ProductVariantsSchema[] = [];
@@ -33,7 +33,7 @@ export default async function ItemCard(product: ProductSchema) {
             },
             cache: "no-store",
         })
-        const data:MediaType[] = await res.json();
+        const data:MediaSchema[] = await res.json();
         if(!res.ok){
             throw new Error("Failed to fetch product images")
         }

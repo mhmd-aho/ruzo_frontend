@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Logo from "../svg/logo";
-
 import SearchBar from "../input/search-bar";
 import MobileMenu from "./mobile-menu";
 import CollectionButton from "./collection-button";

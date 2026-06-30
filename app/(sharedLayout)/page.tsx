@@ -5,6 +5,7 @@ import SecondaryButton from "@/components/buttons/secondary";
 import OurStoryLogo from "@/components/svg/ourstory-logo";
 import VerticalLogo from "@/components/svg/vertical-logo";
 import PrimaryButton from "@/components/buttons/primary";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -16,7 +17,9 @@ export default function Home() {
         <div className="flex flex-col justify-center lg:items-start items-center mb-16 gap-5 z-10">
           <p className="font-montserrat text-muted text-center text-sm hidden lg:block">Summer Collection &apos;26</p>
           <h1 className="font-boldonse text-2xl lg:text-5xl lg:w-[400px] max-w-xs leading-normal text-white text-center lg:text-start">Where Confidence Becomes Style.</h1>
-          <SecondaryButton>SHOP NOW</SecondaryButton>
+          <Link href="/collections">
+              <SecondaryButton>SHOP NOW</SecondaryButton>
+          </Link>
           <p className="font-montserrat text-muted text-start text-sm lg:w-[300px] w-[200px] hidden lg:block">Curated pieces for women who move through the world on their own terms. Sustainable, elevated, unapologetic</p>
         </div>
       </section>

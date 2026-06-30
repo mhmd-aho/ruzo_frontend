@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ColorType, ProductSchema, SizeType } from "@/lib/schemas";
+import { ColorSchema, ProductSchema, SizeSchema } from "@/lib/schemas";
 import Minus from "../svg/minus";
 import Plus from "../svg/plus";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -11,8 +11,8 @@ export default function AddToCartForm({
     sizes,
     product,
 }: {
-    colors: ColorType[],
-    sizes: SizeType[],
+    colors: ColorSchema[],
+    sizes: SizeSchema[],
     product: ProductSchema,
 }) {
     const router = useRouter();
@@ -23,13 +23,13 @@ export default function AddToCartForm({
     const selectedSize = searchParams.get('size');
 
     // Updates the URL query parameters when a color button is clicked
-    const handleSelectedColor = (color: ColorType) => {
+    const handleSelectedColor = (color: ColorSchema) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('color', color.name);
         router.push(`${pathname}?${params.toString()}`);
     } 
 
-    // FIXED: Changed argument parameter from object structure `SizeType` to raw string 
+    // FIXED: Changed argument parameter from object structure `SizeSchema` to raw string 
     // because size mapped from `allSizes` yields plain strings
     const handleSelectedSize = (sizeName: string) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -43,7 +43,7 @@ export default function AddToCartForm({
     
     // Calculates which standard sizes are present in the server fetched available sizes list
     const availableSizes = allSizes.filter((size: string) => 
-        sizes.some((s: SizeType) => s.name.toLowerCase() === size.toLowerCase())
+        sizes.some((s: SizeSchema) => s.name.toLowerCase() === size.toLowerCase())
 )
     const handleAddToCart = async () => {
         if (!selectedColor || !selectedSize) {
@@ -68,7 +68,7 @@ export default function AddToCartForm({
             <div className="flex flex-col lg:gap-3 gap-1">
                 <p className="font-bold text-black">Color: <span className="text-mid ml-1">{selectedColor ? selectedColor : 'Select a color'}</span></p>
                 <div className="flex gap-3">
-                    {colors.map((color: ColorType) => (
+                    {colors.map((color: ColorSchema) => (
                         <button 
                             type="button"
                             onClick={() => handleSelectedColor(color)} 

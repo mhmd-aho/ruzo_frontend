@@ -1,9 +1,25 @@
 "use client";
 import CartIcon from "../svg/cart"; 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CartItems from "./cart-items";
+import { CartItemSchema } from "@/lib/schemas";
+import { getCartItems } from "@/app/action";
+import Link from "next/link";
 export default function Cart() {
     const [cartOpen, setCartOpen] = useState(false);
+    const [cartItems, setCartItems] = useState<CartItemSchema[]>([]);
+    useEffect(()=>{
+        const getCart = async () =>{            
+            const result = await getCartItems();
+            if(!result.success){
+                alert(result.error);
+                return;
+            }
+            setCartItems(result.data);
+            console.log(result.data);
+        }
+        getCart();
+    },[]);
     return(
         <div className="size-6">
             <button className="w-full h-full cursor-pointer" onClick={() => setCartOpen(!cartOpen)}>
@@ -11,15 +27,22 @@ export default function Cart() {
             </button>
             {
                 cartOpen && (
-                    <div className="absolute lg:top-20 top-12 right-0 bg-black/20 backdrop-blur-sm w-full h-screen">
+                    <div className="absolute lg:top-20 top-12 right-0 bg-black/20 backdrop-blur-sm w-full h-[calc(100vh-48px)] lg:h-[calc(100vh-80px)]">
                         <div className="bg-white lg:h-3/4 h-full lg:w-96 w-full absolute right-0 lg:right-5 flex flex-col items-center p-3.5 ">
                             <h3 className="font-boldonse text-xl mb-8">Your Cart</h3>
-                            <div className="flex flex-col items-center justify-start overflow-y-auto h-full w-full gap-7"  >
-                                <CartItems/>
-                                <CartItems/>
+                            <div className="flex flex-col items-center justify-start overflow-y-auto flex-1 w-full gap-7">
+                                {
+                                    cartItems.length === 0 ? (
+                                        <p className="text-mid">Your cart is empty</p>
+                                    ) : (
+                                        cartItems.map((item: CartItemSchema) => (
+                                            <CartItems key={item.id} id={item.id} productVariant={item.product_variant} quantity={item.quantity} />
+                                        ))
+                                    )
+                                }
                             </div>
+                        <Link href='/checkout/order' className="w-full h-12 bg-primary text-white  flex justify-center items-center">Check out</Link>
                         </div>
-                        
                     </div>
                 )
             }

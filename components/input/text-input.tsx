@@ -1,6 +1,8 @@
-export default function Input({id, name, placeholder}: {id: string, name: string, placeholder: string, className?: string}){
+export default function Input({id, name, placeholder,error,field}: {id: string, name: string, placeholder: string,error?: string,field: any}){
     return(
-        <input type="text" id={id} name={name} className="border-2 border-mid h-12 w-full p-2" placeholder={placeholder} />
-
+        <div>
+        <input type="text" {...field} id={id} name={name} className={`border-2 ${error ? 'border-red-500' : 'border-mid'} h-12 w-full p-2`} placeholder={placeholder} />
+        {error && <p className="text-red-500">{error}</p>}
+        </div>
     )
 }

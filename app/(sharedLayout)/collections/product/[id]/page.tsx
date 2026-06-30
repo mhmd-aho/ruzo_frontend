@@ -1,6 +1,6 @@
 import Image from "next/image"
 import ItemCard from "@/components/app/item-card"
-import { ProductSchema, ProductVariantsSchema, MediaType } from "@/lib/schemas";
+import { ProductSchema, ProductVariantsSchema, MediaSchema } from "@/lib/schemas";
 import AddToCartForm from "@/components/app/add-to-cart-form";
 import { Suspense } from "react";
 
@@ -71,7 +71,7 @@ export default async function Product({
                 headers: { "Content-Type": "application/json" },
                 cache: "no-store",
             });
-            const data: MediaType[] = await res.json();
+            const data: MediaSchema[] = await res.json();
             if (!res.ok) throw new Error("Failed to fetch product images");
             if (data.length > 0) {
                 images = data.map((d) => d.media_url);
