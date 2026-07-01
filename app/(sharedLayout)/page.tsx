@@ -1,6 +1,6 @@
 import Image from "next/image";
-import hero from '@/public/hero.png'
 import ItemCard from "@/components/app/item-card";
+import hero from '@/public/hero.png'
 import SecondaryButton from "@/components/buttons/secondary";
 import OurStoryLogo from "@/components/svg/ourstory-logo";
 import VerticalLogo from "@/components/svg/vertical-logo";
@@ -12,7 +12,7 @@ export default function Home() {
     <main className="h-fit w-full flex flex-col lg:gap-12 gap-7">
       <section className="flex lg:justify-start justify-center items-end lg:h-[calc(100vh-80px)] h-[calc(100vh-48px)] w-full relative pl-10">
         <div className="h-full w-full absolute top-0 left-0 ">
-          <Image src={hero} alt="" fill className="object-cover object-top"/>
+          <video src="/hero.mp4" autoPlay loop muted playsInline className="h-full w-full object-cover object-top"/>
         </div>
         <div className="flex flex-col justify-center lg:items-start items-center mb-16 gap-5 z-10">
           <p className="font-montserrat text-muted text-center text-sm hidden lg:block">Summer Collection &apos;26</p>
@@ -29,7 +29,7 @@ export default function Home() {
             <h2 className="text-2xl lg:text-4xl font-boldonse">Best Sellers</h2>
           </div>
           <div className="flex w-full gap-4">
-              <ItemCard/>
+              {/* <ItemCard/> */}
           </div>
       </section>
       <section className="lg:h-[calc(100vh-80px)] h-[calc(100vh-48px)] w-full lg:px-10 px-5 flex flex-col gap-5">
@@ -40,7 +40,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-3 grid-cols-2 lg:grid-rows-2 grid-rows-3 gap-4 lg:gap-5 flex-1">
             <div className="col-span-1 lg:col-start-1 lg:col-end-3 row-span-1 rounded-[10px] overflow-hidden relative flex justify-center items-end lg:pb-10 pb-3.5">
               <div className="absolute top-0 left-0 w-full h-full">
-                  <Image src={hero} alt="" fill className="object-cover object-top"/> 
+                  <Image src="/ourStoryFirstPic.png" alt="" fill className="object-cover object-top"/> 
               </div>
               <button className="bg-primary w-20 lg:w-36 h-8 lg:h-12 lg:text-xl rounded-lg lg:rounded-xl text-sm font-montserrat text-white z-20">Dresses</button>
             </div>
@@ -58,7 +58,7 @@ export default function Home() {
             </div>
             <div className="col-span-1 lg:row-span-1 row-span-1 rounded-[10px] overflow-hidden relative">
               <div className="absolute top-0 left-0 w-full h-full">
-                  <Image src={hero} alt="" fill className="object-cover object-top"/> 
+                  <Image src="/ourStoryFirstPic.png" alt="" fill className="object-cover object-top"/> 
               </div>
               <button className="bg-primary w-20 lg:w-36 h-8 lg:h-12 lg:text-xl rounded-lg lg:rounded-xl text-sm font-montserrat text-white z-20">Skirts</button>
             </div>

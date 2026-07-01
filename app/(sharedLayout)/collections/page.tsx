@@ -3,9 +3,24 @@ import bg from "@/public/hero.png"
 import ItemCard from "@/components/app/item-card"
 import Filters from "@/components/app/filters"
 import { ProductSchema } from "@/lib/schemas";
-export default async function Collections() {
+export default async function Collections({searchParams}:{searchParams: Promise<{category?: string}>}) {
+    const {category} = await searchParams;
     let collections: ProductSchema[] = [];
     try{
+        if(category) {
+            const res = await fetch(`${process.env.BACKEND_URL}products/?category=${category}`,{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            
+        })
+        const data = await res.json()
+        if(!res.ok){
+            throw new Error("Failed to fetch products")
+        }
+        collections = data.results;
+    }else{
         const res = await fetch(`${process.env.BACKEND_URL}products/`,{
             method: "GET",
             headers: {
@@ -18,6 +33,7 @@ export default async function Collections() {
             throw new Error("Failed to fetch products")
         }
         collections = data.results;
+    }
     }catch(err){
         console.log(err)
     }

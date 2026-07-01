@@ -171,3 +171,11 @@ export const placeOrder = async (data: addressFormType) =>{
     }
     return {success:true,message:result.message || "Order placed successfully"};
 }
+export const getCategories = async () => {
+    const res = await fetch(`${process.env.BACKEND_URL}products/categories/`)
+    const data = await res.json();
+    if(!res.ok){
+        return {success:false,error:data.error || "Failed to get categories"};
+    }
+    return {success:true,data:data};
+}

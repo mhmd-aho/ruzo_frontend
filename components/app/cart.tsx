@@ -16,7 +16,6 @@ export default function Cart() {
                 return;
             }
             setCartItems(result.data);
-            console.log(result.data);
         }
         getCart();
     },[]);
