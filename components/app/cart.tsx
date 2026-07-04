@@ -40,7 +40,13 @@ export default function Cart() {
                                     )
                                 }
                             </div>
-                        <Link href='/checkout/order' className="w-full h-12 bg-primary text-white  flex justify-center items-center">Check out</Link>
+                            {
+                                cartItems.length === 0 ? (
+                                    <Link href='/collections' className="w-full h-12 bg-primary text-white  flex justify-center items-center">shop</Link>
+                                ) : (
+                            <Link href='/checkout/order' className="w-full h-12 bg-primary text-white  flex justify-center items-center">Check out</Link>
+                                )   
+                            }
                         </div>
                     </div>
                 )

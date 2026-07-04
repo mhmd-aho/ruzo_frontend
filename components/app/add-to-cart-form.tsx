@@ -5,43 +5,37 @@ import Minus from "../svg/minus";
 import Plus from "../svg/plus";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { addToCart } from "@/app/action";
+import{ toast } from "sonner";
 
 export default function AddToCartForm({
     colors,
     sizes,
     product,
+    quantity
 }: {
     colors: ColorSchema[],
     sizes: SizeSchema[],
     product: ProductSchema,
+    quantity: number
 }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    // NOTE: searchParams.get() returns string | null, not an object.
     const selectedColor = searchParams.get('color');
     const selectedSize = searchParams.get('size');
-
-    // Updates the URL query parameters when a color button is clicked
     const handleSelectedColor = (color: ColorSchema) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('color', color.name);
-        router.push(`${pathname}?${params.toString()}`);
+        router.push(`${pathname}?${params.toString()}`, {scroll: false});
     } 
-
-    // FIXED: Changed argument parameter from object structure `SizeSchema` to raw string 
-    // because size mapped from `allSizes` yields plain strings
     const handleSelectedSize = (sizeName: string) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('size', sizeName);
-        router.push(`${pathname}?${params.toString()}`);
+        router.push(`${pathname}?${params.toString()}`, {scroll: false});
     }
 
-    const [quantity, setQuantity] = useState<number>(1);
-    
+    const [userQuantity, setUserQuantity] = useState<number>(0);
     const allSizes = ['xs', 's', 'm', 'l', 'xl'];
-    
-    // Calculates which standard sizes are present in the server fetched available sizes list
     const availableSizes = allSizes.filter((size: string) => 
         sizes.some((s: SizeSchema) => s.name.toLowerCase() === size.toLowerCase())
 )
@@ -49,22 +43,21 @@ export default function AddToCartForm({
         if (!selectedColor || !selectedSize) {
             return;
         }
-        
-        // The result is now a safe plain object
-        const result = await addToCart(product.id, selectedColor, selectedSize, quantity);
+        const result = await addToCart(product.id, selectedColor, selectedSize, userQuantity);
         
         if (result?.success) {
-            alert(result.message);
+            toast.success(result.message);
         } else {
-            alert(result?.error || "Something went wrong");
+            toast.error(result?.error || "Something went wrong");
         }
     }
+    useEffect(() => {
+        setUserQuantity(0)
+    }, [selectedColor, selectedSize]);
     return (
         <div className="lg:w-1/2 w-full flex flex-col lg:gap-9 gap-3">
             <h2 className="text-2xl lg:text-4xl font-boldonse">{product?.name}</h2>
             <p className="lg:text-2xl text-xl font-boldonse text-black">${product?.price}</p>
-            
-            {/* Color Selection UI */}
             <div className="flex flex-col lg:gap-3 gap-1">
                 <p className="font-bold text-black">Color: <span className="text-mid ml-1">{selectedColor ? selectedColor : 'Select a color'}</span></p>
                 <div className="flex gap-3">
@@ -74,14 +67,11 @@ export default function AddToCartForm({
                             onClick={() => handleSelectedColor(color)} 
                             style={{ backgroundColor: color.color_code }} 
                             key={color.id} 
-                            // FIXED: Directly compared selectedColor string to color.name string
                             className={`lg:size-7 size-5 ${selectedColor === color.name ? 'border-2 border-black' : 'border-2 border-muted'} rounded-full hover:scale-110 transition-all duration-300 ease-in-out cursor-pointer`}
                         ></button>
                     ))}
                 </div>
             </div>
-            
-            {/* Size Selection UI */}
             <div className="flex flex-col lg:gap-3 gap-1">
                 <p className="font-bold text-black">Size: <span className="text-mid ml-1">{selectedSize ? selectedSize : 'Select a size'}</span></p>
                 <div className="flex gap-3">
@@ -92,7 +82,6 @@ export default function AddToCartForm({
                                 onClick={() => handleSelectedSize(size)} 
                                 key={i} 
                                 disabled={!availableSizes.includes(size)} 
-                                // FIXED: Directly compared selectedSize string to size loop string
                                 className={`border border-mid lg:size-12 size-10 ${selectedSize === size ? 'bg-black text-white' : ''} ${availableSizes.includes(size) ? '' : 'opacity-50'}`}
                             >
                                 {size}
@@ -101,21 +90,17 @@ export default function AddToCartForm({
                     })}
                 </div>
             </div>
-            
-            {/* Quantity Selector UI */}
             <div className="flex flex-col lg:gap-3 gap-1">
                 <p className="font-bold text-black">Quantity:</p>
-                <div className="flex items-center justify-center border border-muted w-fit gap-5 self-start py-3 px-5">
-                    {/* Safeguarded minus handler so quantity cannot drop below 1 */}
-                    <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus fill='black' /></button>
-                    <p>{quantity}</p>
-                    <button type="button" onClick={() => setQuantity(quantity + 1)}><Plus fill='black' /></button>
+                <div className="flex items-center justify-center border border-muted w-fit gap-5 self-start py-3 px-5 relative">
+                    <button type="button" disabled={userQuantity === 0} onClick={() => setUserQuantity(Math.max(0, userQuantity - 1))}><Minus fill='black' /></button>
+                    <p>{userQuantity}</p>
+                    <button disabled={userQuantity === quantity} type="button" onClick={() => setUserQuantity(userQuantity + 1)}><Plus fill='black' /></button>
                 </div>
+                {quantity && <p className="text-mid ml-1">Available: {quantity - userQuantity}</p>}
             </div>
             
             <button onClick={handleAddToCart} className="bg-primary text-white w-full lg:h-14 h-12">Add to cart</button>
-            
-            {/* Description UI */}
             <div className="flex flex-col gap-3">
                 <p className="font-bold text-black">Description:</p>
                 <p className="text-mid">{product?.description}</p>

@@ -1,12 +1,17 @@
-import Image from "next/image";
 import ItemCard from "@/components/app/item-card";
-import hero from '@/public/hero.png'
+
+import HomePageCollection from "@/components/app/home-page-collection";
 import SecondaryButton from "@/components/buttons/secondary";
 import OurStoryLogo from "@/components/svg/ourstory-logo";
 import VerticalLogo from "@/components/svg/vertical-logo";
 import PrimaryButton from "@/components/buttons/primary";
+import { Metadata } from "next";
 import Link from "next/link";
 
+export const metadata:Metadata = {
+    title: "Ruzo | Home",
+    description: "Welcome to Ruzo, where confidence becomes style. Discover our latest collections for women who move through the world on their own terms.",
+};
 export default function Home() {
   return (
     <main className="h-fit w-full flex flex-col lg:gap-12 gap-7">
@@ -15,12 +20,12 @@ export default function Home() {
           <video src="/hero.mp4" autoPlay loop muted playsInline className="h-full w-full object-cover object-top"/>
         </div>
         <div className="flex flex-col justify-center lg:items-start items-center mb-16 gap-5 z-10">
-          <p className="font-montserrat text-muted text-center text-sm hidden lg:block">Summer Collection &apos;26</p>
-          <h1 className="font-boldonse text-2xl lg:text-5xl lg:w-[400px] max-w-xs leading-normal text-white text-center lg:text-start">Where Confidence Becomes Style.</h1>
+          <p className="font-montserrat text-mid text-center text-sm hidden lg:block">Summer Collection &apos;26</p>
+          <h1 className="font-boldonse text-2xl lg:text-5xl lg:w-[400px] max-w-xs leading-normal text-black text-center lg:text-start">Where Confidence Becomes Style.</h1>
           <Link href="/collections">
               <SecondaryButton>SHOP NOW</SecondaryButton>
           </Link>
-          <p className="font-montserrat text-muted text-start text-sm lg:w-[300px] w-[200px] hidden lg:block">Curated pieces for women who move through the world on their own terms. Sustainable, elevated, unapologetic</p>
+          <p className="font-montserrat text-black text-start text-sm lg:w-[300px] w-[200px] hidden lg:block">Curated pieces for women who move through the world on their own terms. Sustainable, elevated, unapologetic</p>
         </div>
       </section>
       <section className="w-full lg:h-[calc(100vh-80px)] h-96 relative lg:px-10 px-5">
@@ -38,30 +43,10 @@ export default function Home() {
               <h2 className="text-2xl lg:text-4xl font-boldonse">Collections</h2>
           </div>
           <div className="grid lg:grid-cols-3 grid-cols-2 lg:grid-rows-2 grid-rows-3 gap-4 lg:gap-5 flex-1">
-            <div className="col-span-1 lg:col-start-1 lg:col-end-3 row-span-1 rounded-[10px] overflow-hidden relative flex justify-center items-end lg:pb-10 pb-3.5">
-              <div className="absolute top-0 left-0 w-full h-full">
-                  <Image src="/ourStoryFirstPic.png" alt="" fill className="object-cover object-top"/> 
-              </div>
-              <button className="bg-primary w-20 lg:w-36 h-8 lg:h-12 lg:text-xl rounded-lg lg:rounded-xl text-sm font-montserrat text-white z-20">Dresses</button>
-            </div>
-            <div className="col-span-1  row-span-2 rounded-[10px] overflow-hidden relative">
-              <div className="absolute top-0 left-0 w-full h-full">
-                <Image src='https://3yrpgg4xvr.ucarecd.net/b06ea220-ca39-4a3e-9852-fc0c03ab54b9/-/preview/750x1000/' alt="" fill className="object-cover object-top"/>
-              </div>
-              <button className="bg-primary w-20 lg:w-36 h-8 lg:h-12 lg:text-xl rounded-lg lg:rounded-xl text-sm font-montserrat text-white z-20">Sets</button>
-            </div>
-            <div className="col-span-1 lg:row-span-1 row-span-2 rounded-[10px] overflow-hidden relative">
-              <div className="absolute top-0 left-0 w-full h-full">
-                <Image src={hero} alt="" fill className="object-cover object-top"/> 
-              </div>
-              <button className="bg-primary w-20 lg:w-36 h-8 lg:h-12 lg:text-xl rounded-lg lg:rounded-xl text-sm font-montserrat text-white z-20">Tops</button>
-            </div>
-            <div className="col-span-1 lg:row-span-1 row-span-1 rounded-[10px] overflow-hidden relative">
-              <div className="absolute top-0 left-0 w-full h-full">
-                  <Image src="/ourStoryFirstPic.png" alt="" fill className="object-cover object-top"/> 
-              </div>
-              <button className="bg-primary w-20 lg:w-36 h-8 lg:h-12 lg:text-xl rounded-lg lg:rounded-xl text-sm font-montserrat text-white z-20">Skirts</button>
-            </div>
+            <HomePageCollection name="dresses"/>
+            <HomePageCollection name="tops"/>
+            <HomePageCollection name="sets"/>
+            <HomePageCollection name="skirts"/>
           </div>
       </section>
       <section className="h-fit w-full lg:px-20 px-5 lg:pb-10 pb-20  flex lg:justify-between items-center lg:gap-12 gap-6 relative">

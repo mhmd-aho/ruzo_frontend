@@ -1,5 +1,4 @@
 import Image from "next/image";
-import img from "@/public/hero.png"
 import Link from "next/link";
 import { ProductSchema, ProductVariantsSchema,MediaSchema } from "@/lib/schemas";
 import { Suspense } from "react";

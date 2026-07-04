@@ -1,7 +1,11 @@
 import AddressForm from "@/components/app/addres-form";
 import { getCartItems } from "@/app/action";
 import { CartItemSchema } from "@/lib/schemas";
-
+import { Metadata } from "next";
+export const metadata: Metadata = {
+    title: "Ruzo | Payment",
+    description: "Complete your payment",
+};
 export default async function Payment() {
    let cartItems: CartItemSchema[] = [];
    let subTotal: number = 0;

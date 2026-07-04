@@ -1,10 +1,22 @@
 import Image from "next/image";
 import processing from '@/public/processing.png'
 import materials from '@/public/materials.png'
+import ourStoryFirstPic from '@/public/ourStoryFirstPic.png'
+import { Metadata } from "next";
+export const metadata:Metadata = {
+    title: "Ruzo | Our Story",
+    description: "Discover the story of Ruzo and our commitment to quality and style.",
+};
 export default function OurStory() {
     return(
-        <main className="w-full min-h-screen flex flex-col gap-20">
-            <section className="h-[calc(100vh-80px)] w-full bg-center bg-cover bg-no-repeat flex items-center justify-center" style={{backgroundImage: `url('/ourStoryFirstPic.png')`}}>
+        <main className="w-full min-h-screen flex flex-col gap-10">
+            <section className="h-[calc(100vh-80px)] w-full bg-center bg-cover bg-no-repeat flex items-center justify-center" >
+                <Image
+                src={ourStoryFirstPic}
+                alt=""
+                fill
+                className="object-cover object-center"
+                />
             </section>
             <section className="flex flex-col items-start justify-start w-full h-[calc(100vh-80px)] px-12 gap-10">
                 <h2 className="text-2xl lg:text-4xl font-boldonse">Our story</h2>
@@ -15,7 +27,7 @@ At RUZO, every collection is designed with attention to detail, quality fabrics,
 More than a fashion brand, RUZO is a statement of self-expression. A brand for women who embrace their identity, pursue their ambitions, and wear confidence wherever they go.</p>
                 </div>
             </section>
-            <section className="flex items-start justify-center w-full h-[calc(100vh-80px)] gap-10">
+            <section className="flex items-start justify-center w-full h-fit p-10 gap-10">
                 <Image 
                     src={processing}
                     alt=""

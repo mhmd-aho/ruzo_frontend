@@ -3,24 +3,37 @@ import ItemCard from "@/components/app/item-card"
 import { ProductSchema, ProductVariantsSchema, MediaSchema } from "@/lib/schemas";
 import AddToCartForm from "@/components/app/add-to-cart-form";
 import { Suspense } from "react";
-
+import { Metadata } from "next";
+export async function generateMetadata({params}:{
+    params: Promise<{ id: string }>
+}):Promise<Metadata>{
+    const { id } = await params;
+    const res = await fetch(`${process.env.BACKEND_URL}products/${id}/`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+    const data = await res.json();
+    return {
+        title: data.name,
+        description: data.description,
+    };
+}
 export default async function Product({
     params,
     searchParams
 }: {
     params: Promise<{ id: string }>,
-    searchParams: Promise<{ color?: string, size?: string }> // Marked as optional since they won't exist on first load
+    searchParams: Promise<{ color?: string, size?: string }>
 }) {
-    // 1. Await the asynchronous params from Next.js 15+ routing
     const { id } = await params;
     const { color, size } = await searchParams;
 
     let product: ProductSchema | null = null;
     let productVariants: ProductVariantsSchema[] = [];
     let colorVariants: ProductVariantsSchema[] = [];
+    let selectedVariant: ProductVariantsSchema[] = [];
     let images: string[] = [];
 
-    // 2. Fetch primary product data
     try {
         const res = await fetch(`${process.env.BACKEND_URL}products/${id}/`, {
             method: "GET",
@@ -32,8 +45,6 @@ export default async function Product({
     } catch (err) {
         console.log("Product Fetch Error:", err);
     }
-
-    // 3. Fetch all variants belonging to this product (to extract unique available colors)
     if (product?.id) {
         try {
             const res = await fetch(`${process.env.BACKEND_URL}products/${product.id}/variants/`, {
@@ -47,9 +58,6 @@ export default async function Product({
             console.log("All Variants Fetch Error:", err);
         }
     }
-
-    // 4. Fetch specific variants filtered by the selected color URL parameter
-    // Defensive check: Only fetch if 'color' exists in URL to avoid passing `undefined` to the API
     if (product?.id && color) {
         try {
             const res = await fetch(`${process.env.BACKEND_URL}products/${product.id}/variants/?color=${color}`, {
@@ -63,8 +71,20 @@ export default async function Product({
             console.log("Color Variants Fetch Error:", err);
         }
     }
-
-    // 5. Fetch media/images associated with the selected color variant
+    if(product?.id && color && size){
+        try {
+            const res = await fetch(`${process.env.BACKEND_URL}products/${product.id}/variants/?color=${color}&size=${size}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error("Failed to fetch filtered color variants");
+            selectedVariant = data;
+            console.log(selectedVariant)
+        } catch (err) {
+            console.log("Color Variants Fetch Error:", err);
+        }
+    }
     if (colorVariants.length > 0) {
         try {
             const res = await fetch(`${process.env.BACKEND_URL}products/${colorVariants[0].id}/media/`, {
@@ -81,27 +101,21 @@ export default async function Product({
         }
     }
 
-    // 6. Map unique colors from all variants to render the color selector circles
     const colors = Array.from(
         new Map(productVariants.map(v => [v.color.id, v.color])).values()
     );
 
-    // 7. Map unique sizes available *specifically* for the selected color
     const sizes = Array.from(
         new Map(colorVariants?.map(v => [v.size.id, v.size])).values()
     );
 
-    // 8. Extract primary preview image fallback
     const image = images.length > 0 ? images[0] : '';
 
     return (
         <>
             <section className="w-full lg:h-[calc(100vh-80px)]">
                 <div className="flex flex-col lg:flex-row items-start justify-center lg:gap-16 gap-6 lg:h-[calc(100vh-80px)] lg:px-10 px-5 pb-8">
-                    
-                    {/* Media Display Section */}
                     <div className="flex relative w-full h-[60vh] lg:h-full lg:w-fit">
-                        {/* Static Placeholder thumbnails */}
                         <div className="flex-col gap-3 hidden lg:flex">
                             <div className="bg-black h-28 w-18" />
                             <div className="bg-black h-28 w-18" />
@@ -122,13 +136,9 @@ export default async function Product({
                             ) : <div className="size-full bg-muted animate-pulse" />
                         }
                     </div>
-                    
-                    {/* Interactive Add to Cart Form */}
-                    {product && <AddToCartForm sizes={sizes} colors={colors} product={product} />}
+                    {product && <AddToCartForm sizes={sizes} colors={colors} product={product} quantity={selectedVariant?.[0]?.quantity || 0} />}
                 </div>
             </section>
-            
-            {/* Recommendations Section */}
             <section className="lg:h-[calc(100vh-80px)] w-full lg:px-10 px-5 pt-8 pb-12">
                 <div className="flex flex-col gap-8">
                     <h2 className="text-2xl lg:text-4xl font-boldonse">You May Also Like</h2>

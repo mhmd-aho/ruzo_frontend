@@ -2,6 +2,13 @@ import Link from "next/link";
 import CheckoutItems from "@/components/app/checkout-items";
 import { getCartItems } from "@/app/action";
 import { CartItemSchema } from "@/lib/schemas";
+import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
+export const metadata: Metadata = {
+    title: "Ruzo | Order",
+    description: "Complete your order",
+};
 export default async function Page(){
     let cartItems:CartItemSchema[] = []
     let cartTotal:number = 0
@@ -13,6 +20,9 @@ export default async function Page(){
         }
     }catch(err){
         console.log(err)
+    }
+    if (cartItems.length === 0) {
+        return redirect('/collections')
     }
     return (
         <div className="lg:h-[calc(100vh-144px)] h-[calc(100vh-120px)] flex flex-col items-start justify-start lg:px-20 px-5">

@@ -69,3 +69,7 @@ export type areaSchema = {
         name: string;
     }
 } 
+export type categorySchema = {
+    id: number;
+    name: string 
+}
