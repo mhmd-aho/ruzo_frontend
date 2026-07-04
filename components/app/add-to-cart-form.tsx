@@ -97,7 +97,7 @@ export default function AddToCartForm({
                     <p>{userQuantity}</p>
                     <button disabled={userQuantity === quantity} type="button" onClick={() => setUserQuantity(userQuantity + 1)}><Plus fill='black' /></button>
                 </div>
-                {quantity && <p className="text-mid ml-1">Available: {quantity - userQuantity}</p>}
+                {quantity > 0 && <p className="text-mid ml-1">Available: {quantity - userQuantity}</p>}
             </div>
             
             <button onClick={handleAddToCart} className="bg-primary text-white w-full lg:h-14 h-12">Add to cart</button>

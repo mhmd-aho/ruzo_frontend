@@ -1,5 +1,4 @@
-import ItemCard from "@/components/app/item-card";
-
+import BestSeller from "@/components/app/best-seller";
 import HomePageCollection from "@/components/app/home-page-collection";
 import SecondaryButton from "@/components/buttons/secondary";
 import OurStoryLogo from "@/components/svg/ourstory-logo";
@@ -33,9 +32,7 @@ export default function Home() {
             <p className="text-primary font-montserrat text-center hidden lg:block text-[14px] font-bold tracking-widest">Most loved</p>
             <h2 className="text-2xl lg:text-4xl font-boldonse">Best Sellers</h2>
           </div>
-          <div className="flex w-full gap-4">
-              {/* <ItemCard/> */}
-          </div>
+          <BestSeller/>
       </section>
       <section className="lg:h-[calc(100vh-80px)] h-[calc(100vh-48px)] w-full lg:px-10 px-5 flex flex-col gap-5">
           <div className="flex flex-col items-start gap-5">

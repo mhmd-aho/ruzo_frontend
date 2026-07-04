@@ -20,11 +20,19 @@ export type ProductSchema = {
     category: string;
     sale:number;
     best_sale:boolean;
+    variants:ProductVariantsSchema[];
+    default_img:ProductMediaSchema;
 }
 export type ColorSchema = {
     id: number;
     name: string;
     color_code:string;
+}
+export type ProductMediaSchema = {
+    id: number;
+    product: ProductSchema;
+    color: ColorSchema;
+    media_url: string;
 }
 export type SizeSchema = {
     id: number;
@@ -37,11 +45,6 @@ export type ProductVariantsSchema = {
     color: ColorSchema;
     quantity: number;
     
-}
-export type MediaSchema = {
-    id: number;
-    media_url:string;
-    product_variant:ProductVariantsSchema;
 }
 export type CartItemSchema = {
     id: number;
@@ -69,6 +72,7 @@ export type areaSchema = {
         name: string;
     }
 } 
+
 export type categorySchema = {
     id: number;
     name: string 

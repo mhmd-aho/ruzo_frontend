@@ -55,8 +55,8 @@ export default async function Collections({
                     {collections.length === 0 ? (
                         <p className="col-span-2 text-center text-mid py-12">No products found matching the criteria.</p>
                     ) : (
-                        collections.map((item) => (
-                            <ItemCard key={item.id} {...item} />
+                        collections.map((product) => (
+                            <ItemCard key={product.id} product={product} />
                         ))
                     )}
                 </div>

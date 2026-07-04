@@ -179,3 +179,20 @@ export const getCategories = async () => {
     }
     return {success:true,data:data};
 }
+export const getBestSellers = async () => {
+    const res = await fetch(`${process.env.BACKEND_URL}products/?sort=best_selling`)
+    const data = await res.json();
+    if(!res.ok){
+        return {success:false,error:data.error || "Failed to get best sellers"};
+    }
+    const bestThree = data.results.slice(0, 3);
+    return {success:true,data:bestThree};
+}
+export const getSearchResults = async (input:string) => {
+    const res = await fetch(`${process.env.BACKEND_URL}products/?search=${input}`)
+    const data = await res.json();
+    if(!res.ok){
+        return {success:false,error:data.error || "Failed to get search results"};
+    }
+    return {success:true,data:data.results};
+}

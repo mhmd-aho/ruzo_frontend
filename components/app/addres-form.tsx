@@ -8,6 +8,8 @@ import { areaSchema,AddressFormSchema  } from "@/lib/schemas";
 import {zodResolver} from "@hookform/resolvers/zod"
 import { placeOrder } from "@/app/action";
 import { z } from "zod";
+import Link from "next/link";
+import { toast } from "sonner";
 type addressFormType = z.infer<typeof AddressFormSchema>
 export default function AddressForm(){
   const [isPending,startTransition] = useTransition();
@@ -41,9 +43,9 @@ export default function AddressForm(){
       startTransition(async () => {
         const res = await placeOrder(data);
         if(res.success){
-          alert(res.message);
+          toast.success(res.message);
         }else{
-          alert(res.error);
+          toast.error(res.error);
         }
       })
     }
@@ -155,7 +157,7 @@ export default function AddressForm(){
                     </div>
                </div>
                <div className="lg:w-full flex justify-between max-lg:absolute max-lg:bottom-20 w-11/12">
-                <button className="text-primary flex justify-center items-center gap-2"><BackArrow/> Return to Cart</button>
+                <Link href='/checkout/cart' className="text-primary flex justify-center items-center gap-2"><BackArrow/> Return to Cart</Link>
                 <button disabled={isPending} type="submit" className={`text-white bg-primary px-5 py-1 ${isPending?'opacity-50':''}`}>{isPending ? 'Placing Order...' : 'Place Order'}</button>
                </div>
            </form>
