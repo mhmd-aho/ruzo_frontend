@@ -23,7 +23,7 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
     const img = product?.default_img?.media_url || "";
 
     return (
-        <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8 font-montserrat">
+        <div className="bg-white py-12 px-4 sm:px-6 lg:px-8 font-montserrat">
             {product ? (
                 <div className="max-w-4xl mx-auto bg-white border border-muted shadow-sm overflow-hidden">
                     <div className="md:flex">
@@ -36,13 +36,9 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
                                 </div>
                             )}
                             {
-                                product.best_seller?(
+                                product.best_seller && (
                                     <span className="absolute top-4 right-4 bg-primary text-white px-2 py-1 text-xs font-semibold uppercase tracking-widest">
                                         Best Seller
-                                    </span>
-                                ):(
-                                    <span className="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 text-xs font-semibold uppercase tracking-widest">
-                                        Not Best Seller
                                     </span>
                                 )
                             }
@@ -55,12 +51,20 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
                                         <h1 className="text-3xl font-boldonse uppercase tracking-wider text-black">{product.name}</h1>
                                         <p className="text-xl font-boldonse text-primary mt-2">${product.price}</p>
                                     </div>
-                                    <Link 
-                                        href={`/admin/products/edit/${product.id}/info`}
-                                        className="inline-flex items-center justify-center px-6 h-12 bg-primary hover:bg-black text-white font-montserrat text-xs uppercase tracking-widest font-bold transition-all duration-300 rounded-none cursor-pointer"
-                                    >
-                                        Edit Details
-                                    </Link>
+                                    <div className="flex flex-col gap-1">
+                                        <Link 
+                                            href={`/admin/products/edit/${product.id}/info`}
+                                            className="inline-flex items-center justify-center px-6 h-12 bg-primary hover:bg-black text-white font-montserrat text-xs uppercase tracking-widest font-bold transition-all duration-300 rounded-none cursor-pointer"
+                                        >
+                                            Edit Details
+                                        </Link>
+                                        <Link 
+                                            href={`/admin/products/add/media/${product.id}`}
+                                            className="inline-flex items-center justify-center px-6 h-12 bg-primary hover:bg-black text-white font-montserrat text-xs uppercase tracking-widest font-bold transition-all duration-300 rounded-none cursor-pointer"
+                                        >
+                                            Add Images
+                                        </Link>
+                                    </div>
                                 </div>
 
                                 <div className="mt-6">
@@ -107,7 +111,7 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
                                             </td>
                                             <td className="py-4 px-4 sm:px-6 text-right">
                                                 <Link
-                                                    href={`/admin/products/edit/${product.id}/variants/${variant.id}`}
+                                                    href={`/admin/products/edit/${product.id}/variants`}
                                                     className="inline-flex items-center justify-center text-xs font-bold uppercase tracking-widest text-primary hover:text-white border border-primary hover:bg-primary px-4 py-2 transition-all duration-300 rounded-none"
                                                 >
                                                     Edit Stock

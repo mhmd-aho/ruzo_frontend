@@ -56,14 +56,14 @@ export default function AddressForm(){
               control={form.control}
               name="receiver_first_name"
               render={({field,fieldState}) => (
-                <Input error={fieldState.error?.message} field={field} id="receiver_first_name" name="receiver_first_name" placeholder="First Name"/>
+                <Input error={fieldState.error?.message} field={field} id="receiver_first_name" name="receiver_first_name" placeholder="First Name" required={true}/>
               )}
               />
             <Controller
             control={form.control}
             name="receiver_last_name"
             render={({field,fieldState}) => (
-              <Input error={fieldState.error?.message} field={field} id="receiver_last_name" name="receiver_last_name" placeholder="Last Name"/>
+              <Input error={fieldState.error?.message} field={field} id="receiver_last_name" name="receiver_last_name" placeholder="Last Name" required={true}/>
             )}
             />
             </div>
@@ -72,14 +72,14 @@ export default function AddressForm(){
                 control={form.control}
                 name="receiver_phone_number"
                 render={({field,fieldState}) => (
-                  <Input error={fieldState.error?.message} field={field} id="receiver_phone_number" name="receiver_phone_number" placeholder="Phone Number"/>
+                  <Input error={fieldState.error?.message} field={field} id="receiver_phone_number" name="receiver_phone_number" placeholder="Phone Number" required={true}/>
                 )}
                 />
                 <Controller
                 control={form.control}
                 name="receiver_secondary_phone_number"
                 render={({field,fieldState}) => (
-                  <Input error={fieldState.error?.message} field={field} id="phonenumber2" name="phonenumber2" placeholder="Phone Number"/>
+                  <Input error={fieldState.error?.message} field={field} id="phonenumber2" name="phonenumber2" placeholder="Phone Number" required={true}/>
                 )}
                 />
             </div>
@@ -119,14 +119,14 @@ export default function AddressForm(){
                 control={form.control}
                 name="receiver_building"
                 render={({field,fieldState}) => (
-                  <Input error={fieldState.error?.message} field={field} id="receiver_building" name="receiver_building" placeholder="Building"/>
+                  <Input error={fieldState.error?.message} field={field} id="receiver_building" name="receiver_building" placeholder="Building" required={true}/>
                 )}
                 />
                 <Controller
                 control={form.control}
                 name="receiver_floor"
                 render={({field,fieldState}) => (
-                  <Input error={fieldState.error?.message} field={field} id="receiver_floor" name="receiver_floor" placeholder="Floor"/>
+                  <Input error={fieldState.error?.message} field={field} id="receiver_floor" name="receiver_floor" placeholder="Floor" required={true}/>
                 )}
                 />
               </div>
@@ -134,14 +134,14 @@ export default function AddressForm(){
                 control={form.control}
                 name="receiver_email"
                 render={({field,fieldState}) => (
-                  <Input error={fieldState.error?.message} field={field} id="receiver_email" name="receiver_email" placeholder="Email"/>
+                  <Input error={fieldState.error?.message} field={field} id="receiver_email" name="receiver_email" placeholder="Email" required={false}/>
                 )}
                 />
                 <Controller
                 control={form.control}
                 name="receiver_directions"
                 render={({field,fieldState}) => (
-                  <Input error={fieldState.error?.message} field={field} id="receiver_directions" name="receiver_directions" placeholder="Address Details"/>
+                  <Input error={fieldState.error?.message} field={field} id="receiver_directions" name="receiver_directions" placeholder="Address Details" required={true}/>
 
                 )}
                 />
@@ -157,7 +157,7 @@ export default function AddressForm(){
                     </div>
                </div>
                <div className="lg:w-full flex justify-between max-lg:absolute max-lg:bottom-20 w-11/12">
-                <Link href='/checkout/cart' className="text-primary flex justify-center items-center gap-2"><BackArrow/> Return to Cart</Link>
+                <Link href='/checkout/order' className="text-primary flex justify-center items-center gap-2"><BackArrow/> Return to Cart</Link>
                 <button disabled={isPending} type="submit" className={`text-white bg-primary px-5 py-1 ${isPending?'opacity-50':''}`}>{isPending ? 'Placing Order...' : 'Place Order'}</button>
                </div>
            </form>

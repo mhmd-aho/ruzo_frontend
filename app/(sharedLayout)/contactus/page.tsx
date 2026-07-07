@@ -4,8 +4,9 @@ import { toast } from "sonner";
 
 export default function ContactUsPage() {
 
-  const onSubmit = async (event) => {
-    const formData = new FormData(event.target);
+  const onSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget);
     formData.append("access_key", "ad1f7cd2-de93-4b02-949d-2c0fd51a6dc0");
 
     const response = await fetch("https://api.web3forms.com/submit", {
@@ -16,7 +17,7 @@ export default function ContactUsPage() {
     const data = await response.json();
     if (data.success) {
       toast.success("Form Submitted Successfully");
-      event.target.reset();
+      event.currentTarget.reset();
     } else {
       toast.error("Error");
     }
@@ -32,12 +33,12 @@ export default function ContactUsPage() {
             <div className="flex gap-4 w-full">
                 <div className="flex flex-col gap-2 w-full">
                     <label htmlFor="name" className="text-sm">name</label>
-                    <Input id='name' name='name' placeholder='name'/>
+                    <Input id='name' name='name' placeholder='name' required={true}/>
                 </div>
             </div>
                 <div className="flex flex-col gap-2 w-full">
                     <label htmlFor="email">email</label>
-                    <Input id='email' name='email' placeholder='email'/>
+                    <Input id='email' name='email' placeholder='email' required={true}/>
                 </div>
                 <div className="flex flex-col gap-2">
                     <label htmlFor="message">message</label>

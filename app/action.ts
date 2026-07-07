@@ -1,7 +1,8 @@
 "use server"
 import { cookies } from "next/headers";
-import { AddressFormSchema, AdminSignInSchema, ProductInputSchema, VariantInputSchema } from "@/lib/schemas";
+import { AddressFormSchema, AdminSignInSchema, ProductInputSchema, ProductVaraintInputSchema, ProductSchema,ProductVariantsSchema } from "@/lib/schemas";
 import { z } from "zod";
+
 type addressFormType = z.infer<typeof AddressFormSchema>
 // get variant
 const getVariant = async (id: number, selectedColor: string, selectedSize: string) => {
@@ -258,7 +259,7 @@ export const getAdminProducts = async () => {
     }
     return {success:true,data:data.results};
 }
-export async function createProductWithVariants(productData: ProductInputSchema, variantsData: VariantInputSchema[]) {
+export async function createProductWithVariants(productData: ProductInputSchema, variantsData: ProductVariantsSchema[]) {
     try {
         // 1. Get the admin token securely from the server session cookies
         const cookieStore = await cookies();
@@ -288,26 +289,16 @@ export async function createProductWithVariants(productData: ProductInputSchema,
 
         // 3. Fire parallel creation posts for all the generated combinations
         const variantPromises = variantsData.map((variant) => {
-            return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/variants/create/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Token ${token}`,
-                },
-                body: JSON.stringify({
-                    product_id: newProductId, // Bind variant to the new parent product ID
-                    color_id: variant.color.id,
-                    size_id: variant.size.id,
-                    quantity: variant.quantity,
-                }),
+            return createVariant(newProductId, {
+                color_id: variant.color.id,
+                size_id: variant.size.id,
+                quantity: variant.quantity,
             });
         });
 
-        // Wait until all variant API entries finish settling in Django
-        const variantResponses = await Promise.all(variantPromises);
+        const variantResults = await Promise.all(variantPromises);
 
-        // Check if any variant uploads failed
-        const anyFailed = variantResponses.some(res => !res.ok);
+        const anyFailed = variantResults.some(res => !res.success);
         if (anyFailed) {
             return { 
                 success: true, 
@@ -316,10 +307,128 @@ export async function createProductWithVariants(productData: ProductInputSchema,
             };
         }
 
-
         return { success: true, productId: newProductId };
 
     } catch (error: any) {
         return { success: false, error: error.message || "An unexpected network error occurred." };
     }
+}
+
+export async function createVariant(productId: number, variant: { color_id: number; size_id: number; quantity: number }) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if (!token) {
+        return { success: false, error: "Unauthorized: Missing admin access token." };
+    }
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/variants/create/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${token}`,
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                color_id: variant.color_id,
+                size_id: variant.size_id,
+                quantity: variant.quantity,
+            }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            return { success: false, error: data.error || "Failed to create variant" };
+        }
+        return { success: true, data };
+    } catch (error: any) {
+        return { success: false, error: error.message || "Failed to create variant due to network error." };
+    }
+}
+
+export async function updateVariant(data:ProductVaraintInputSchema) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if (!token) {
+        return { success: false, error: "Unauthorized: Missing admin access token." };
+    }
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/variants/${data.id}/update/`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await res.json();
+        if (!res.ok) {
+            return { success: false, error: result.error || "Failed to update variant" };
+        }
+        return { success: true, data };
+    } catch (error: any) {
+        return { success: false, error: error.message || "Failed to update variant due to network error." };
+    }
+}
+
+export const updateProduct = async (id:number, data:ProductSchema) => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if(!token){
+        return {success:false,error:"Admin token not found"};
+    }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/${id}/update`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Token ${token}`,
+        },
+        body: JSON.stringify(data),
+    })
+    const result = await res.json();
+    if(!res.ok){
+        return {success:false,error:result.error || "Failed to update product"};
+    }
+    return {success:true,data:result};
+}
+export const deleteOrder = async (orderId:string,reason:string) => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if(!token){
+        return {success:false,error:"Admin token not found"};
+    }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/${orderId}/`,{
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Token ${token}`,
+        },
+        body: JSON.stringify({ reason }),
+    })
+    const result = await res.json();
+    if(!res.ok){
+        return {success:false,error:result.error || "Failed to delete order"};
+    }
+    return {success:true,data:result};
+}
+export const logout = async () => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if(!token){
+        return {success:false,error:"Admin token not found"};
+    }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}logout/`,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Token ${token}`,
+        },
+    })
+    const result = await res.json();
+    if(!res.ok){
+        return {success:false,error:result.error || "Failed to logout"};
+    }
+    cookieStore.delete("admin_token");
+    return {success:true,data:result};
 }

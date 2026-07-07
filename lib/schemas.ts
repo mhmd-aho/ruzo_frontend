@@ -81,7 +81,7 @@ export type categorySchema = {
     id: number;
     name: string 
 }
-export type orderSchema = {
+export type OrderSchema = {
     id: number;
     status: "pending"|"shipped"|"delivered";
     created_at: string;
@@ -90,16 +90,17 @@ export type orderSchema = {
     address: z.infer<typeof AddressFormSchema>;
     barcode: string;
 }
-export type VariantInputSchema = {
-    color: ColorSchema;
-    size: SizeSchema;
-    quantity: number;
-}
-
 export type ProductInputSchema = {
     name: string;
     description: string;
-    price: string;
-    category_id: string;
+    price: number;
+    category_id: number;
     best_seller: boolean;
+}
+export type ProductVaraintInputSchema ={
+    id: number;
+    color_id: number;
+    size_id: number;
+    quantity: number;
+    product_id: number;
 }

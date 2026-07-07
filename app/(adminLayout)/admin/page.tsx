@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { orderSchema } from "@/lib/schemas";
+import { OrderSchema } from "@/lib/schemas";
 export default async function AdminPage(){
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token");
     if(!token){
         redirect("/admin/signin");
     }
-    let orders: orderSchema[] = [];
+    let orders: OrderSchema[] = [];
     try{
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/`, {
             headers: {
@@ -20,7 +20,7 @@ export default async function AdminPage(){
     }catch(error){
         console.log(error);
     }
-    const totalRevenue = orders.reduce((acc:number,order:orderSchema) => acc + Number(order.total_price),0);
+    const totalRevenue = orders.reduce((acc:number,order:OrderSchema) => acc + Number(order.total_price),0);
     return (
         <div className="w-full h-[150vh] lg:h-[calc(100vh-112px)] grid grid-cols-2 grid-rows-6  gap-4 p-5">
             <div className="border border-muted rounded-md col-span-1 row-span-1 lg:row-span-2 p-2 flex flex-col justify-between">
@@ -48,7 +48,7 @@ export default async function AdminPage(){
                         <p className="w-32">Date</p>
 
                     </div>
-                    {orders.map((order:orderSchema) => {
+                    {orders.map((order:OrderSchema) => {
                         const date = new Date(order.created_at);
                         return(
                         <div key={order.id} className="flex justify-between items-center text-center">
