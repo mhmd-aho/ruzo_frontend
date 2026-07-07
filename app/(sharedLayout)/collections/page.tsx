@@ -24,7 +24,7 @@ export default async function Collections({
         if (size) queryParams.set("size", size);
 
         const queryString = queryParams.toString();
-        const url = `${process.env.BACKEND_URL}products/${queryString ? `?${queryString}` : ""}`;
+        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}products/${queryString ? `?${queryString}` : ""}`;
 
         const res = await fetch(url, {
             method: "GET",
@@ -56,7 +56,7 @@ export default async function Collections({
                         <p className="col-span-2 text-center text-mid py-12">No products found matching the criteria.</p>
                     ) : (
                         collections.map((product) => (
-                            <ItemCard key={product.id} product={product} />
+                            <ItemCard key={product.id} product={product} admin={false} />
                         ))
                     )}
                 </div>

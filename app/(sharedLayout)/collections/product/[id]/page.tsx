@@ -6,7 +6,7 @@ import { cache } from "react";
 
 const getProduct = cache(async (id: string): Promise<ProductSchema | null> => {
     try {
-        const res = await fetch(`${process.env.BACKEND_URL}products/${id}/`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/${id}/`, {
             headers: { "Content-Type": "application/json" },
         });
         if (!res.ok) return null;
@@ -59,7 +59,7 @@ export default async function Product({
         const colorId = colorVariants[0].color.id;
         try {
             const res = await fetch(
-                `${process.env.BACKEND_URL}products/${product.id}/${colorId}/media/`,
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}products/${product.id}/${colorId}/media/`,
                 { headers: { "Content-Type": "application/json" }, cache: "no-store" }
             );
             if (res.ok) {

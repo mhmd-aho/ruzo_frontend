@@ -28,7 +28,7 @@ export default function Home() {
         </div>
       </section>
       <section className="w-full lg:h-[calc(100vh-80px)] h-96 relative lg:px-10 px-5">
-          <div className="flex flex-col items-start gap-5">
+          <div className="flex flex-col items-start justify-center gap-5">
             <p className="text-primary font-montserrat text-center hidden lg:block text-[14px] font-bold tracking-widest">Most loved</p>
             <h2 className="text-2xl lg:text-4xl font-boldonse">Best Sellers</h2>
           </div>

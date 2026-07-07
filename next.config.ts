@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "3yrpgg4xvr.ucarecd.net",
-        pathname: "/**",
       },
     ],
   },

@@ -43,13 +43,14 @@ export default function BestSeller() {
         const spacing = 1 / cards.length;
         spacingRef.current = spacing;
 
-        gsap.set(cards, { xPercent: 400, opacity: 0, scale: 0 });
+        // Set initial state: out of frame hidden elements start at 0 opacity
+        gsap.set(cards, { xPercent: 250, opacity: 0, scale: 0.6 });
 
         const animateFunc = (element: HTMLElement) => {
             const tl = gsap.timeline();
             tl.fromTo(
                 element,
-                { scale: 0, opacity: 0 },
+                { scale: 0.6, opacity: 0.25, zIndex: 10 },
                 {
                     scale: 1,
                     opacity: 1,
@@ -57,13 +58,13 @@ export default function BestSeller() {
                     duration: 0.5,
                     yoyo: true,
                     repeat: 1,
-                    ease: "power1.in",
+                    ease: "power2.out",
                     immediateRender: false,
                 }
             ).fromTo(
                 element,
-                { xPercent: 400 },
-                { xPercent: -400, duration: 1, ease: "none", immediateRender: false },
+                { xPercent: 220 },
+                { xPercent: -220, duration: 1, ease: "none", immediateRender: false },
                 0
             );
             return tl;
@@ -79,7 +80,7 @@ export default function BestSeller() {
         const scrub = gsap.to(playhead, {
             offset: 0,
             duration: 0.5,
-            ease: "power3",
+            ease: "power3.out",
             paused: true,
             onUpdate() {
                 seamlessLoop.time(wrapTime(playhead.offset));
@@ -126,16 +127,17 @@ export default function BestSeller() {
     };
 
     return (
-        <div className="relative w-full flex flex-col items-center gap-6">
-            <ul className="relative w-full h-[420px] overflow-hidden list-none p-0 m-0">
+        <div className="relative w-full flex flex-col items-center gap-6 overflow-visible">
+            {/* Added 3D perspective and allowed cards to look seamless across boundaries */}
+            <ul className="relative w-full h-[460px] overflow-visible list-none p-0 m-0 [perspective:1000px]">
                 {bestSellers.length > 0 ? (
                     bestSellers.map((item, i) => (
                         <li
                             key={item.id}
                             ref={(el) => { cardRefs.current[i] = el; }}
-                            className="absolute top-0 left-1/2 -translate-x-1/2 w-64"
+                            className="absolute top-0 left-1/2 -translate-x-1/2 w-64 transition-opacity custom-carousel-card"
                         >
-                            <ItemCard product={item} />
+                            <ItemCard product={item} admin={false} />
                         </li>
                     ))
                 ) : (
@@ -146,7 +148,7 @@ export default function BestSeller() {
             </ul>
 
             {bestSellers.length > 0 && (
-                <div className="flex gap-2">
+                <div className="flex gap-2 z-20">
                     {bestSellers.map((_, i) => (
                         <button
                             key={i}

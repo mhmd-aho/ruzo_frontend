@@ -12,6 +12,10 @@ export const AddressFormSchema = z.object({
     receiver_floor: z.string().min(1, "Floor is required"),
     receiver_directions: z.string().min(5, "Address Details is required"),
 })
+export const AdminSignInSchema = z.object({
+    username: z.string().min(3, "Username is too short"),
+    password: z.string().min(8, "Password is too short"),
+})
 export type ProductSchema = {
     id: number;
     name: string;
@@ -19,7 +23,7 @@ export type ProductSchema = {
     price: number;
     category: string;
     sale:number;
-    best_sale:boolean;
+    best_seller:boolean;
     variants:ProductVariantsSchema[];
     default_img:ProductMediaSchema;
 }
@@ -76,4 +80,26 @@ export type areaSchema = {
 export type categorySchema = {
     id: number;
     name: string 
+}
+export type orderSchema = {
+    id: number;
+    status: "pending"|"shipped"|"delivered";
+    created_at: string;
+    total_price: number;
+    items: CartItemSchema[];
+    address: z.infer<typeof AddressFormSchema>;
+    barcode: string;
+}
+export type VariantInputSchema = {
+    color: ColorSchema;
+    size: SizeSchema;
+    quantity: number;
+}
+
+export type ProductInputSchema = {
+    name: string;
+    description: string;
+    price: string;
+    category_id: string;
+    best_seller: boolean;
 }

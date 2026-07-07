@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ProductSchema, ProductMediaSchema, ProductVariantsSchema,ColorSchema } from "@/lib/schemas";
 type Props = {
     product: ProductSchema
+    admin:boolean
 }   
-export default function ItemCard({product}: Props) {
+export default function ItemCard({product,admin}: Props) {
+    const [isLoading, setIsLoading] = useState(true);
     const variants:ProductVariantsSchema[] = product.variants;
     const colors = Array.from(
         new Map(
@@ -17,16 +19,29 @@ export default function ItemCard({product}: Props) {
     const media = product.default_img;
     return (
         <Link 
-            href={`/collections/product/${product.id}`} 
+            href={`${admin ? `/admin/products/edit/${product.id}` : `/collections/product/${product.id}`} `} 
             className="lg:h-[540px] h-[280px] lg:w-[392px] w-[170px] flex flex-col items-start gap-3"
         >
-            <div className="lg:h-[438px] h-[220px] w-full overflow-hidden relative">
-                {media.media_url ? (
-                    <Suspense fallback={<div className="size-full bg-muted animate-pulse" />}>
-                        <Image fill src={media.media_url} alt="product image" className="object-cover object-bottom" />
-                    </Suspense>
+<div className="lg:h-[438px] h-[220px] w-full overflow-hidden relative bg-gray-100">
+                {media?.media_url ? (
+                    <>
+                        {isLoading && (
+                            <div className="absolute inset-0 bg-gray-200 animate-pulse z-10" />
+                        )}
+                        <Image
+                            unoptimized
+                            fill
+                            sizes="(max-width: 1024px) 170px, 392px"
+                            src={media.media_url}
+                            alt={product.name}
+                            className={`object-cover object-bottom transition-all duration-500 ${
+                                isLoading ? "blur-md scale-105" : "blur-0 scale-100"
+                            }`}
+                            onLoad={() => setIsLoading(false)}
+                        />
+                    </>
                 ) : (
-                    <div className="size-full bg-muted animate-pulse" />
+                    <div className="size-full bg-gray-200" />
                 )}
             </div>
             <div className="flex-1 w-full flex flex-col gap-2">
