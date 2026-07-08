@@ -1,5 +1,6 @@
 import { ProductSchema } from "@/lib/schemas";
 import Link from "next/link";
+import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 
 export default async function EditProduct({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -11,6 +12,7 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
             headers: {
                 "Content-Type": "application/json",
             },
+            ...withCacheTags(CACHE_TAGS.product(id)),
         });
         const data = await res.json();
         if (res.ok) {

@@ -77,7 +77,7 @@ export type areaSchema = {
     }
 } 
 
-export type categorySchema = {
+export type CategorySchema = {
     id: number;
     name: string 
 }

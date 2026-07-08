@@ -1,10 +1,11 @@
 import { ProductSchema } from "@/lib/schemas";
 import EditProductForm from "@/components/app/edit-product-form";
+import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 export default async function EditInfo({params}: {params: Promise<{id: string}>}) {
     const {id} = await params;
     let product:ProductSchema;
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/${id}/`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/${id}/`, withCacheTags(CACHE_TAGS.product(id)))
         const data = await res.json();
         product = data;
     } catch (error) {

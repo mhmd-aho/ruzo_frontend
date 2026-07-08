@@ -19,6 +19,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
             headers: {
                 "Authorization": `Token ${token.value}`,
             },
+            cache: "no-store",
         });
         const data = await res.json();
         if (res.ok) {

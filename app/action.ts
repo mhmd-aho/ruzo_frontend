@@ -1,6 +1,8 @@
 "use server"
 import { cookies } from "next/headers";
 import { AddressFormSchema, AdminSignInSchema, ProductInputSchema, ProductVaraintInputSchema, ProductSchema,ProductVariantsSchema } from "@/lib/schemas";
+import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
+import { revalidateCartCache, revalidateOrderCaches, revalidateProductCaches } from "@/lib/revalidate";
 import { z } from "zod";
 
 type addressFormType = z.infer<typeof AddressFormSchema>
@@ -20,7 +22,7 @@ export const getVariantImage = async (id: number) => {
         headers: {
             "Content-Type": "application/json",
         },
-        cache: "no-store",
+        ...withCacheTags(CACHE_TAGS.productMedia(id), CACHE_TAGS.product(id)),
     })
     const data = await res.json();
     if(!res.ok){
@@ -82,6 +84,9 @@ export const addToCart = async (id: number, selectedColor: string, selectedSize:
         return { success: false, error: data.error || "Failed to add item to cart" };
     }
 
+    revalidateCartCache();
+    revalidateProductCaches(id);
+
     return { success: true, message: data.message || "Item added to cart" };
 }
 
@@ -119,6 +124,7 @@ export const deleteItemFromCart = async (id: number) => {
     if(!res.ok){
         return {success:false,error:data.error || "Failed to delete item from cart"};
     }
+    revalidateCartCache();
     return {success:true,message:data.message || "Item deleted from cart"};
 }
 export const updateCartItemQuantity = async (id: number, action: 'increase' | 'decrease') => {
@@ -137,6 +143,7 @@ export const updateCartItemQuantity = async (id: number, action: 'increase' | 'd
     if(!res.ok){
         return {success:false,error:data.error || "Failed to update item from cart"};
     }
+    revalidateCartCache();
     return {success:true,message:data.message || "Item updated from cart"};
 }
 
@@ -147,7 +154,7 @@ export const getWakilniAreas = async () => {
         headers: { 
             "Content-Type": "application/json",
         },
-        cache: "no-store",
+        ...withCacheTags(CACHE_TAGS.areas),
     });
     const data = await res.json();
     if(!res.ok){
@@ -170,10 +177,12 @@ export const placeOrder = async (data: addressFormType) =>{
     if(!res.ok){
         return {success:false,error:result.error || "Failed to place order"};
     }
+    revalidateCartCache();
+    revalidateOrderCaches();
     return {success:true,message:result.message || "Order placed successfully"};
 }
 export const getCategories = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/categories/`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/categories/`, withCacheTags(CACHE_TAGS.categories))
     const data = await res.json();
     if(!res.ok){
         return {success:false,error:data.error || "Failed to get categories"};
@@ -181,7 +190,7 @@ export const getCategories = async () => {
     return {success:true,data:data};
 }
 export const getColors = async ()=>{
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/colors/`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/colors/`, withCacheTags(CACHE_TAGS.colors))
     const data = await res.json();
     if(!res.ok){
         return {success:false,error:data.error || "Failed to get colors"};
@@ -189,7 +198,7 @@ export const getColors = async ()=>{
     return {success:true,data:data};
 }
 export const getSizes = async ()=>{
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/sizes/`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/sizes/`, withCacheTags(CACHE_TAGS.sizes))
     const data = await res.json();
     if(!res.ok){
         return {success:false,error:data.error || "Failed to get sizes"};
@@ -198,7 +207,7 @@ export const getSizes = async ()=>{
 }
 
 export const getBestSellers = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/?sort=best_selling`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/?sort=best_selling`, withCacheTags(CACHE_TAGS.bestSellers, CACHE_TAGS.products))
     const data = await res.json();
     if(!res.ok){
         return {success:false,error:data.error || "Failed to get best sellers"};
@@ -207,7 +216,7 @@ export const getBestSellers = async () => {
     return {success:true,data:bestThree};
 }
 export const getSearchResults = async (input:string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/?search=${input}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/?search=${input}`, withCacheTags(CACHE_TAGS.search, CACHE_TAGS.products))
     const data = await res.json();
     if(!res.ok){
         return {success:false,error:data.error || "Failed to get search results"};
@@ -300,6 +309,7 @@ export async function createProductWithVariants(productData: ProductInputSchema,
 
         const anyFailed = variantResults.some(res => !res.success);
         if (anyFailed) {
+            revalidateProductCaches(newProductId);
             return { 
                 success: true, 
                 warning: "Product was created, but some variants failed to register correctly.",
@@ -307,6 +317,7 @@ export async function createProductWithVariants(productData: ProductInputSchema,
             };
         }
 
+        revalidateProductCaches(newProductId);
         return { success: true, productId: newProductId };
 
     } catch (error: any) {
@@ -338,6 +349,7 @@ export async function createVariant(productId: number, variant: { color_id: numb
         if (!res.ok) {
             return { success: false, error: data.error || "Failed to create variant" };
         }
+        revalidateProductCaches(productId);
         return { success: true, data };
     } catch (error: any) {
         return { success: false, error: error.message || "Failed to create variant due to network error." };
@@ -363,6 +375,7 @@ export async function updateVariant(data:ProductVaraintInputSchema) {
         if (!res.ok) {
             return { success: false, error: result.error || "Failed to update variant" };
         }
+        revalidateProductCaches(data.product_id);
         return { success: true, data };
     } catch (error: any) {
         return { success: false, error: error.message || "Failed to update variant due to network error." };
@@ -388,6 +401,7 @@ export const updateProduct = async (id:number, data:ProductSchema) => {
     if(!res.ok){
         return {success:false,error:result.error || "Failed to update product"};
     }
+    revalidateProductCaches(id);
     return {success:true,data:result};
 }
 export const deleteOrder = async (orderId:string,reason:string) => {
@@ -409,6 +423,7 @@ export const deleteOrder = async (orderId:string,reason:string) => {
     if(!res.ok){
         return {success:false,error:result.error || "Failed to delete order"};
     }
+    revalidateOrderCaches(orderId);
     return {success:true,data:result};
 }
 export const logout = async () => {
@@ -431,4 +446,37 @@ export const logout = async () => {
     }
     cookieStore.delete("admin_token");
     return {success:true,data:result};
+}
+
+export async function createProductMedia(productId: number, colorId: number, mediaUrl: string) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if (!token) {
+        return { success: false, error: "Unauthorized: Missing admin access token." };
+    }
+
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/media/create/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${token}`,
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                color_id: colorId,
+                media_url: mediaUrl,
+            }),
+        });
+
+        if (!res.ok) {
+            const data = await res.json();
+            return { success: false, error: data.error || "Failed to create product media" };
+        }
+
+        revalidateProductCaches(productId);
+        return { success: true };
+    } catch {
+        return { success: false, error: "Network error saving uploaded media." };
+    }
 }

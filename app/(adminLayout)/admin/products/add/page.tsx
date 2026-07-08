@@ -3,7 +3,7 @@
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createProductWithVariants, getCategories, getColors, getSizes } from "@/app/action";
-import { VariantInputSchema, categorySchema, ColorSchema, SizeSchema } from "@/lib/schemas";
+import { ProductVaraintInputSchema, CategorySchema, ColorSchema, SizeSchema } from "@/lib/schemas";
 import { toast } from "sonner";
 
 export default function AddProductPage() {
@@ -15,10 +15,10 @@ export default function AddProductPage() {
     const [bestSeller, setBestSeller] = useState(false);
     const [colors, setColors] = useState<ColorSchema[]>([]);
     const [sizes, setSizes] = useState<SizeSchema[]>([]);
-    const [categories, setCategories] = useState<categorySchema[]>([]);
+    const [categories, setCategories] = useState<CategorySchema[]>([]);
     const [selectedColors, setSelectedColors] = useState<ColorSchema[]>([]);
     const [selectedSizes, setSelectedSizes] = useState<SizeSchema[]>([]);
-    const [variants, setVariants] = useState<VariantInputSchema[]>([]);
+    const [variants, setVariants] = useState<ProductVaraintInputSchema[]>([]);
     const [isPending,startTransition] = useTransition();
     useEffect(() => {
         const fetchData = async () => {
@@ -44,16 +44,18 @@ export default function AddProductPage() {
     }, []);
 
     useEffect(() => {
-        const matrix: VariantInputSchema[] = [];
+        const matrix: ProductVaraintInputSchema[] = [];
         
         selectedColors.forEach((color) => {
             selectedSizes.forEach((size) => {
-                const existing = variants.find((v) => v.color === color && v.size === size);
+                const existing = variants.find((v) => v.color_id === color.id && v.size_id === size.id);
                 
                 matrix.push({
-                    color,
-                    size,
+                    color_id:color.id,
+                    size_id:size.id,
                     quantity: existing ? existing.quantity : 0,
+                    product_id: 0,
+                    id: 0,
                 });
             });
         });
@@ -243,10 +245,10 @@ export default function AddProductPage() {
                             </thead>
                             <tbody>
                                 {variants.map((variant, idx) => (
-                                    <tr key={`${variant.color.id}-${variant.size.id}`} className="border-b border-muted last:border-0 hover:bg-neutral-50/70 transition-colors font-montserrat">
+                                    <tr key={`${variant.color_id}-${variant.size_id}`} className="border-b border-muted last:border-0 hover:bg-neutral-50/70 transition-colors font-montserrat">
                                         <td className="p-4 flex items-center gap-2">
-                                            <span className="px-3 py-1 border border-muted text-xs uppercase tracking-wider font-semibold text-black bg-neutral-50">{variant.color.name}</span>
-                                            <span className="px-3 py-1 border border-muted text-xs uppercase tracking-wider font-semibold text-black bg-neutral-50">{variant.size.name}</span>
+                                            <span className="px-3 py-1 border border-muted text-xs uppercase tracking-wider font-semibold text-black bg-neutral-50">{variant.color_id}</span>
+                                            <span className="px-3 py-1 border border-muted text-xs uppercase tracking-wider font-semibold text-black bg-neutral-50">{variant.size_id}</span>
                                         </td>
                                         <td className="p-4">
                                             <div className="flex justify-center">

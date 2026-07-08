@@ -1,6 +1,7 @@
 import { ProductSchema, ProductVariantsSchema, ProductMediaSchema } from "@/lib/schemas";
 import AddToCartForm from "@/components/app/add-to-cart-form";
 import ProductGallery from "@/components/app/product-gallery";
+import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 import { Metadata } from "next";
 import { cache } from "react";
 
@@ -8,6 +9,7 @@ const getProduct = cache(async (id: string): Promise<ProductSchema | null> => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/${id}/`, {
             headers: { "Content-Type": "application/json" },
+            ...withCacheTags(CACHE_TAGS.product(id)),
         });
         if (!res.ok) return null;
         return res.json();
@@ -60,7 +62,10 @@ export default async function Product({
         try {
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}products/${product.id}/${colorId}/media/`,
-                { headers: { "Content-Type": "application/json" }, cache: "no-store" }
+                {
+                    headers: { "Content-Type": "application/json" },
+                    ...withCacheTags(CACHE_TAGS.productMedia(product.id), CACHE_TAGS.product(product.id)),
+                }
             );
             if (res.ok) {
                 const data: ProductMediaSchema[] = await res.json();

@@ -53,7 +53,7 @@ export default function Home() {
                     RUZO was born from a simple belief: confidence starts with what you wear. What began as a passion for fashion and timeless style grew into a brand dedicated to creating pieces that make women feel powerful, comfortable, and effortlessly elegant. We wanted to move beyond fast-changing trends and focus on clothing that remains relevant, season after season.
                 </p>
                 <div className="max-lg:absolute max-lg:bottom-5 max-lg:left-1/2 max-lg:-translate-x-1/2">
-                  <PrimaryButton>read more</PrimaryButton>
+                  <Link href="/ourstory"><PrimaryButton>Read more</PrimaryButton></Link>
                 </div>
               </div>
               <div className="h-fit ">

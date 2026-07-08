@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ColorSchema, ProductSchema } from "@/lib/schemas";
+import { createProductMedia } from "@/app/action";
 import { FileUploaderRegular } from '@uploadcare/react-uploader/next';
 import '@uploadcare/react-uploader/core.css';
 import { toast } from "sonner";
-export default function AddMedia({ product,token }: { product: ProductSchema,token:string }) {
+export default function AddMedia({ product }: { product: ProductSchema }) {
     const router = useRouter();
     const [selectedColor, setSelectedColor] = useState<string>("");
     const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
@@ -37,28 +38,17 @@ export default function AddMedia({ product,token }: { product: ProductSchema,tok
         }
 
         startTransition(async () => {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/media/create/`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Token ${token}`,
-                    },
-                    body: JSON.stringify({
-                        product_id: product.id,
-                        color_id: Number(selectedColor),
-                        media_url: uploadedUrls[0],
-                    }),
-                });
+            const result = await createProductMedia(
+                product.id,
+                Number(selectedColor),
+                uploadedUrls[0]
+            );
 
-                if (response.ok) {
-                    toast.success("Media gallery assets registered successfully!");
-                    router.replace(`/admin/products`);
-                } else {
-                    toast.error("Failed to associate uploaded media to backend parameters.");
-                }
-            } catch (err) {
-                toast.error("Network error saving uploaded layout values.");
+            if (result.success) {
+                toast.success("Media gallery assets registered successfully!");
+                router.replace(`/admin/products`);
+            } else {
+                toast.error(result.error || "Failed to associate uploaded media to backend parameters.");
             }
         });
     };

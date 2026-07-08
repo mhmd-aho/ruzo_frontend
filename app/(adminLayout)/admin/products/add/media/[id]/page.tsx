@@ -2,6 +2,7 @@
 import AddMedia from "@/components/app/add-media"
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 export default async function AddMediaPage({params}:{params:{id:string}}) {
    const {id} = await params;
    let product = null
@@ -11,7 +12,7 @@ export default async function AddMediaPage({params}:{params:{id:string}}) {
     return redirect("/admin/signin");
    }
    try{
-     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`)
+     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`, withCacheTags(CACHE_TAGS.product(id)))
      product = await res.json();
    }catch(err){
     return (
@@ -23,7 +24,7 @@ export default async function AddMediaPage({params}:{params:{id:string}}) {
    }
     return (
         <div className="flex flex-col items-center justify-center">
-        <AddMedia product={product} token={token}/>
+        <AddMedia product={product} />
         </div>
     )
 }

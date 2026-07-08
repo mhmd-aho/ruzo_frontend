@@ -3,6 +3,7 @@ import bg from "@/public/hero.png";
 import ItemCard from "@/components/app/item-card";
 import Filters from "@/components/app/filters";
 import { ProductSchema } from "@/lib/schemas";
+import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 import { Metadata } from "next";
 export const metadata:Metadata = {
     title: "Ruzo | Collections",
@@ -31,6 +32,7 @@ export default async function Collections({
             headers: {
                 "Content-Type": "application/json",
             },
+            ...withCacheTags(CACHE_TAGS.products),
         });
 
         const data = await res.json();

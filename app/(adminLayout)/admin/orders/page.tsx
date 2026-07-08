@@ -16,6 +16,7 @@ export default async function OrdersPage() {
             headers: {
                 "Authorization": `Token ${token.value}`,
             },
+            cache: "no-store",
         });
         if (response.ok) {
             orders = await response.json();

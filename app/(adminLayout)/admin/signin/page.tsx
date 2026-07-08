@@ -38,14 +38,14 @@ export default function AdminSignIn(){
                 control={form.control}
                 name="username"
                 render={({field,fieldState}) => (
-                    <Input error={fieldState.error?.message} field={field} id="username" name="username" placeholder="Username" required={true}/>
+                    <Input error={fieldState.error?.message} field={field} id="username" name="username" placeholder="Username" required={true} type="text"/>
                 )}
                 />
                 <Controller
                 control={form.control}
                 name="password"
                 render={({field,fieldState}) => (
-                    <Input error={fieldState.error?.message} field={field} id="password" name="password" placeholder="Password" required={true}/>
+                    <Input error={fieldState.error?.message} field={field} id="password" name="password" placeholder="Password" required={true} type="password"/>
                 )}
                 />
                 <button disabled={isPending} className="bg-primary px-4 py-2 rounded-md text-white" type="submit">

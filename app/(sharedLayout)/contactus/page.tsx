@@ -33,12 +33,12 @@ export default function ContactUsPage() {
             <div className="flex gap-4 w-full">
                 <div className="flex flex-col gap-2 w-full">
                     <label htmlFor="name" className="text-sm">name</label>
-                    <Input id='name' name='name' placeholder='name' required={true}/>
+                    <Input id='name' name='name' placeholder='name' required={true} type='text'/>
                 </div>
             </div>
                 <div className="flex flex-col gap-2 w-full">
                     <label htmlFor="email">email</label>
-                    <Input id='email' name='email' placeholder='email' required={true}/>
+                    <Input id='email' name='email' placeholder='email' required={true} type='text'/>
                 </div>
                 <div className="flex flex-col gap-2">
                     <label htmlFor="message">message</label>

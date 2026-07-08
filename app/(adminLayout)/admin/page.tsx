@@ -14,6 +14,7 @@ export default async function AdminPage(){
             headers: {
                 "Authorization": `Token ${token.value}`,
             },
+            cache: "no-store",
         });
         const data = await response.json();
         orders = data;
