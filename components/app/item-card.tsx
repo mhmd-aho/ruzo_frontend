@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ProductSchema, ProductMediaSchema, ProductVariantsSchema,ColorSchema } from "@/lib/schemas";
+import { ProductSchema, ProductVariantsSchema,ColorSchema } from "@/lib/schemas";
 type Props = {
     product: ProductSchema
     admin:boolean

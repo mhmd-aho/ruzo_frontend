@@ -16,10 +16,12 @@ export default function AddMedia({ product }: { product: ProductSchema }) {
     const colors = Array.from(product.variants.map((v) => v.color)).filter(
         (c, i, a) => a.findIndex((variantColor) => variantColor.id === c.id) === i
     );
-    const handleUploadChange = (collection: any) => {
+    type UploadedFileEntry = { status: string; cdnUrl?: string | null };
+    type UploadCollection = { allEntries: UploadedFileEntry[] };
+    const handleUploadChange = (collection: UploadCollection) => {
         const urls = collection.allEntries
-            .filter((file: any) => file.status === "success")
-            .map((file: any) => file.cdnUrl)
+            .filter((file) => file.status === "success")
+            .map((file) => file.cdnUrl)
             .filter(Boolean) as string[];
 
         setUploadedUrls(urls);

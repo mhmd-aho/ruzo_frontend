@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function Input({type,id, name, placeholder,error,field,required,onChange}: {id: string, name: string, placeholder: string,error?: string,field?: any,required:boolean,type:string,onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void}){
     const [showPassword,setShowPassword] = useState(false);
     if(onChange){

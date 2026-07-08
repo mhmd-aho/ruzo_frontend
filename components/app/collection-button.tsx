@@ -3,11 +3,11 @@ import Link from "next/link";
 import Arrow from "../svg/arrow";
 import { useEffect, useState } from "react";
 import { getCategories } from "@/app/action";
-import {categorySchema} from "@/lib/schemas"
+import {CategorySchema} from "@/lib/schemas"
 
 export default function CollectionButton() {
     const [isHovered, setIsHovered] = useState(false);
-    const [categories, setCategories] = useState<categorySchema[]>([]);
+    const [categories, setCategories] = useState<CategorySchema[]>([]);
     useEffect(()=>{
         if (isHovered) {
             const scrollBar = window.innerWidth - document.body.clientWidth;
@@ -28,6 +28,7 @@ export default function CollectionButton() {
             }
             getCategoriesData();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     return (
         <div className="h-fit lg:h-full max-lg:w-full flex flex-col items-center">

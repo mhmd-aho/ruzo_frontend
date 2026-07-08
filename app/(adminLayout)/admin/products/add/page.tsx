@@ -59,6 +59,7 @@ export default function AddProductPage() {
                 });
             });
         });
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setVariants(matrix);
     }, [selectedColors, selectedSizes]);
 
@@ -77,7 +78,7 @@ export default function AddProductPage() {
             }));
 
             const payload = {
-                product: { name, description, price, category_id: category, best_seller: bestSeller },
+                product: { name, description, price: Number(price), category_id: Number(category), best_seller: bestSeller },
                 variants: finalVariants
             };
 
@@ -247,8 +248,8 @@ export default function AddProductPage() {
                                 {variants.map((variant, idx) => (
                                     <tr key={`${variant.color_id}-${variant.size_id}`} className="border-b border-muted last:border-0 hover:bg-neutral-50/70 transition-colors font-montserrat">
                                         <td className="p-4 flex items-center gap-2">
-                                            <span className="px-3 py-1 border border-muted text-xs uppercase tracking-wider font-semibold text-black bg-neutral-50">{variant.color_id}</span>
-                                            <span className="px-3 py-1 border border-muted text-xs uppercase tracking-wider font-semibold text-black bg-neutral-50">{variant.size_id}</span>
+                                            <span className="px-3 py-1 border border-muted text-xs uppercase tracking-wider font-semibold text-black bg-neutral-50">{colors.find(c => c.id === variant.color_id)?.name ?? variant.color_id}</span>
+                                            <span className="px-3 py-1 border border-muted text-xs uppercase tracking-wider font-semibold text-black bg-neutral-50">{sizes.find(s => s.id === variant.size_id)?.name ?? variant.size_id}</span>
                                         </td>
                                         <td className="p-4">
                                             <div className="flex justify-center">

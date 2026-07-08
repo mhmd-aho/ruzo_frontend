@@ -24,7 +24,7 @@ export default function CartItems({id,productVariant,quantity}: {id:number,produ
                 {
                     media ? (
 
-                        <Image fill src={media} alt="product image" className="object-cover object-bottom"/>
+                        <Image width={112} height={128} src={media} alt="product image" className="h-full w-28 object-cover object-bottom"/>
                     ) : (
                         <div className="bg-muted animate-pulse h-full w-28"/>
                     )

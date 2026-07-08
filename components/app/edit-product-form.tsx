@@ -1,13 +1,13 @@
 "use client"
 import { getCategories } from "@/app/action"
-import { categorySchema, ProductInputSchema, ProductSchema } from "@/lib/schemas"
+import { CategorySchema, ProductInputSchema, ProductSchema } from "@/lib/schemas"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { updateProduct } from "@/app/action"
 import { useRouter } from "next/navigation"
 
 export default function EditProductForm({product}: {product: ProductSchema}) {
-    const [categories,setCategories] = useState<categorySchema[]>([]) 
+    const [categories,setCategories] = useState<CategorySchema[]>([]) 
     const router = useRouter();
     useEffect(()=>{
         const fetchCategories = async () => {

@@ -12,11 +12,11 @@ export default function SearchBar() {
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     useEffect(() => {
-        if (searchInput.trim().length <= 3) {
-            setResults([])
-            return;
-        }
         const debounce = setTimeout(async () => {
+            if (searchInput.trim().length <= 3) {
+                setResults([]);
+                return;
+            }
             try {
                 const res = await getSearchResults(searchInput);
                 if (res.success && res.data.length > 0) {

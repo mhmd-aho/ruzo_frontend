@@ -1,6 +1,6 @@
 "use server"
 import { cookies } from "next/headers";
-import { AddressFormSchema, AdminSignInSchema, ProductInputSchema, ProductVaraintInputSchema, ProductSchema,ProductVariantsSchema } from "@/lib/schemas";
+import { AddressFormSchema, AdminSignInSchema, ProductInputSchema, ProductVaraintInputSchema } from "@/lib/schemas";
 import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 import { revalidateCartCache, revalidateOrderCaches, revalidateProductCaches } from "@/lib/revalidate";
 import { z } from "zod";
@@ -268,7 +268,7 @@ export const getAdminProducts = async () => {
     }
     return {success:true,data:data.results};
 }
-export async function createProductWithVariants(productData: ProductInputSchema, variantsData: ProductVariantsSchema[]) {
+export async function createProductWithVariants(productData: ProductInputSchema, variantsData: ProductVaraintInputSchema[]) {
     try {
         // 1. Get the admin token securely from the server session cookies
         const cookieStore = await cookies();
@@ -299,8 +299,8 @@ export async function createProductWithVariants(productData: ProductInputSchema,
         // 3. Fire parallel creation posts for all the generated combinations
         const variantPromises = variantsData.map((variant) => {
             return createVariant(newProductId, {
-                color_id: variant.color.id,
-                size_id: variant.size.id,
+                color_id: variant.color_id,
+                size_id: variant.size_id,
                 quantity: variant.quantity,
             });
         });
@@ -320,8 +320,8 @@ export async function createProductWithVariants(productData: ProductInputSchema,
         revalidateProductCaches(newProductId);
         return { success: true, productId: newProductId };
 
-    } catch (error: any) {
-        return { success: false, error: error.message || "An unexpected network error occurred." };
+    } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : "An unexpected network error occurred." };
     }
 }
 
@@ -351,8 +351,8 @@ export async function createVariant(productId: number, variant: { color_id: numb
         }
         revalidateProductCaches(productId);
         return { success: true, data };
-    } catch (error: any) {
-        return { success: false, error: error.message || "Failed to create variant due to network error." };
+    } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : "Failed to create variant due to network error." };
     }
 }
 
@@ -377,12 +377,12 @@ export async function updateVariant(data:ProductVaraintInputSchema) {
         }
         revalidateProductCaches(data.product_id);
         return { success: true, data };
-    } catch (error: any) {
-        return { success: false, error: error.message || "Failed to update variant due to network error." };
+    } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update variant due to network error." };
     }
 }
 
-export const updateProduct = async (id:number, data:ProductSchema) => {
+export const updateProduct = async (id:number, data:ProductInputSchema) => {
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token")?.value;
     if(!token){

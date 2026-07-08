@@ -3,11 +3,12 @@ import EditProductForm from "@/components/app/edit-product-form";
 import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 export default async function EditInfo({params}: {params: Promise<{id: string}>}) {
     const {id} = await params;
-    let product:ProductSchema;
+    let product:ProductSchema|null = null;
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/${id}/`, withCacheTags(CACHE_TAGS.product(id)))
-        const data = await res.json();
-        product = data;
+        if (res.ok) {
+            product = await res.json();
+        }
     } catch (error) {
         console.log(error);
     }
@@ -17,7 +18,13 @@ export default async function EditInfo({params}: {params: Promise<{id: string}>}
                 <div className="flex justify-between items-center border-b border-muted pb-4">
                     <h1 className="text-3xl font-boldonse uppercase tracking-wider text-black">Edit Product</h1>
                 </div>
-                <EditProductForm product={product}/>
+                {product ? (
+                    <EditProductForm product={product}/>
+                ) : (
+                    <p className="text-sm text-mid font-semibold uppercase tracking-widest text-center py-12">
+                        Requested product could not be found.
+                    </p>
+                )}
             </div>
         </div>
     )

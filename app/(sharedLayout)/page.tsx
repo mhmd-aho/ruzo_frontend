@@ -34,18 +34,20 @@ export default function Home() {
           </div>
           <BestSeller/>
       </section>
-      <section className="lg:h-[calc(100vh-80px)] h-[calc(100vh-48px)] w-full lg:px-10 px-5 flex flex-col gap-5">
-          <div className="flex flex-col items-start gap-5">
-              <p className="text-primary font-montserrat text-center hidden lg:block text-[14px] font-bold tracking-widest">New</p>
-              <h2 className="text-2xl lg:text-4xl font-boldonse">Collections</h2>
-          </div>
-          <div className="grid lg:grid-cols-3 grid-cols-2 lg:grid-rows-2 grid-rows-3 gap-4 lg:gap-5 flex-1">
-            <HomePageCollection name="dresses"/>
-            <HomePageCollection name="tops"/>
-            <HomePageCollection name="sets"/>
-            <HomePageCollection name="skirts"/>
-          </div>
-      </section>
+      <section className="min-h-[calc(100vh-80px)] h-auto w-full lg:px-10 px-5 flex flex-col gap-5 pb-5">
+      <div className="flex flex-col items-start gap-5">
+        <p className="text-primary font-montserrat text-center hidden lg:block text-[14px] font-bold tracking-widest">New</p>
+        <h2 className="text-2xl lg:text-4xl font-boldonse">Collections</h2>
+      </div>
+      
+      {/* Grid container handles explicit row spans */}
+      <div className="grid lg:grid-cols-3 grid-cols-2 lg:grid-rows-2 grid-rows-3 gap-4 lg:gap-5 flex-1 min-h-[500px]">
+        <HomePageCollection name="dresses"/>
+        <HomePageCollection name="tops"/>
+        <HomePageCollection name="sets"/>
+        <HomePageCollection name="skirts"/>
+      </div>
+    </section>
       <section className="h-fit w-full lg:px-20 px-5 lg:pb-10 pb-20  flex lg:justify-between items-center lg:gap-12 gap-6 relative">
               <div className="flex flex-col lg:w-1/3 w-3/4 lg:gap-12 gap-6">
                 <h2 className="text-2xl lg:text-4xl font-boldonse">Our Story</h2> 

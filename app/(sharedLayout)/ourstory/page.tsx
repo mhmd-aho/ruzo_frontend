@@ -14,7 +14,8 @@ export default function OurStory() {
                 <Image
                 src={ourStoryFirstPic}
                 alt=""
-                fill
+                width={1920}
+                height={1080}
                 className="object-cover object-center"
                 />
             </section>
@@ -30,13 +31,13 @@ More than a fashion brand, RUZO is a statement of self-expression. A brand for w
             <section className="flex items-start justify-center w-full h-fit p-10 gap-10">
                 <Image 
                     src={processing}
-                    alt=""
+                    alt="processing"
                     width={488}
                     height={643}
                 />
                 <Image 
                     src={materials}
-                    alt=""
+                    alt="materials"
                     width={488}
                     height={643}
                 />

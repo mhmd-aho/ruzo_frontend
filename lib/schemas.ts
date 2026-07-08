@@ -11,6 +11,9 @@ export const AddressFormSchema = z.object({
     receiver_building: z.string().min(1, "Building is required"),
     receiver_floor: z.string().min(1, "Floor is required"),
     receiver_directions: z.string().min(5, "Address Details is required"),
+    receiver_payment_method: z.enum(['cash_on_delivery', 'e_payment'], {
+        message: "Please select a payment method",
+    }),
 })
 export const AdminSignInSchema = z.object({
     username: z.string().min(3, "Username is too short"),
@@ -21,7 +24,7 @@ export type ProductSchema = {
     name: string;
     description: string;
     price: number;
-    category: string;
+    category: CategorySchema;
     sale:number;
     best_seller:boolean;
     variants:ProductVariantsSchema[];
@@ -81,12 +84,20 @@ export type CategorySchema = {
     id: number;
     name: string 
 }
+export type OrderItemSchema = {
+    id: number;
+    product_name?: string;
+    size_name?: string;
+    color_name?: string;
+    price: number;
+    quantity: number;
+}
 export type OrderSchema = {
     id: number;
     status: "pending"|"shipped"|"delivered";
     created_at: string;
     total_price: number;
-    items: CartItemSchema[];
+    items: OrderItemSchema[];
     address: z.infer<typeof AddressFormSchema>;
     barcode: string;
 }

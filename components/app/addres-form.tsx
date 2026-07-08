@@ -37,6 +37,7 @@ export default function AddressForm(){
         receiver_floor:"",
         receiver_email:"",
         receiver_directions:"",
+        receiver_payment_method:"cash_on_delivery",
       }
     })
     const onSubmit = async (data:addressFormType) => {
@@ -145,17 +146,39 @@ export default function AddressForm(){
 
                 )}
                 />
-               <div className="flex flex-col gap-2">
-                    <h2 className="text-lg">Payment method</h2>
-                    <div className="flex justify-between border-2 border-mid p-3">
-                            <label htmlFor="cash-on-delivery">Cash on Delivery</label>
-                            <input className="size-5 checked:bg-primary rounded-full border border-muted appearance-none" type="radio" name="shipping" id="cash-on-delivery" />
-                    </div>
-                    <div className="flex justify-between border-2 border-mid p-3 opacity-50">
-                            <label htmlFor="e-payment">E-payment</label>
-                            <input disabled={true} className="size-5 checked:bg-primary rounded-full border border-muted appearance-none" type="radio" name="shipping" id="e-payment" />
-                    </div>
-               </div>
+               <Controller
+               control={form.control}
+               name="receiver_payment_method"
+               render={({field,fieldState}) => (
+                 <div className="flex flex-col gap-2">
+                      <h2 className="text-lg">Payment method</h2>
+                      <div className="flex justify-between border-2 border-mid p-3">
+                              <label htmlFor="cash-on-delivery">Cash on Delivery</label>
+                              <input
+                                checked={field.value === "cash_on_delivery"}
+                                onChange={() => field.onChange("cash_on_delivery")}
+                                className="size-5 checked:bg-primary rounded-full border border-muted appearance-none"
+                                type="radio"
+                                name="receiver_payment_method"
+                                id="cash-on-delivery"
+                              />
+                      </div>
+                      <div className="flex justify-between border-2 border-mid p-3 opacity-50">
+                              <label htmlFor="e-payment">E-payment</label>
+                              <input
+                                checked={field.value === "e_payment"}
+                                onChange={() => field.onChange("e_payment")}
+                                disabled={true}
+                                className="size-5 checked:bg-primary rounded-full border border-muted appearance-none"
+                                type="radio"
+                                name="receiver_payment_method"
+                                id="e-payment"
+                              />
+                      </div>
+                      {fieldState.error?.message && <p className="text-error">{fieldState.error.message}</p>}
+                 </div>
+               )}
+               />
                <div className="lg:w-full flex justify-between max-lg:absolute max-lg:bottom-20 w-11/12">
                 <Link href='/checkout/order' className="text-primary flex justify-center items-center gap-2"><BackArrow/> Return to Cart</Link>
                 <button disabled={isPending} type="submit" className={`text-white bg-primary px-5 py-1 ${isPending?'opacity-50':''}`}>{isPending ? 'Placing Order...' : 'Place Order'}</button>

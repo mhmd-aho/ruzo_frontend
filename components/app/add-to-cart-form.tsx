@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ColorSchema, ProductSchema, SizeSchema } from "@/lib/schemas";
 import Minus from "../svg/minus";
 import Plus from "../svg/plus";
@@ -35,6 +35,12 @@ export default function AddToCartForm({
     }
 
     const [userQuantity, setUserQuantity] = useState<number>(0);
+    const [prevSelectionKey, setPrevSelectionKey] = useState(`${selectedColor}-${selectedSize}`);
+    const selectionKey = `${selectedColor}-${selectedSize}`;
+    if (selectionKey !== prevSelectionKey) {
+        setPrevSelectionKey(selectionKey);
+        setUserQuantity(0);
+    }
     const allSizes = ['xs', 's', 'm', 'l', 'xl'];
     const availableSizes = allSizes.filter((size: string) => 
         sizes.some((s: SizeSchema) => s.name.toLowerCase() === size.toLowerCase())
@@ -51,9 +57,6 @@ export default function AddToCartForm({
             toast.error(result?.error || "Something went wrong");
         }
     }
-    useEffect(() => {
-        setUserQuantity(0)
-    }, [selectedColor, selectedSize]);
     return (
         <div className="lg:w-1/2 w-full flex flex-col lg:gap-9 gap-3">
             <h2 className="text-2xl lg:text-4xl font-boldonse">{product?.name}</h2>

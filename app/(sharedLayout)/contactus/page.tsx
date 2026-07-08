@@ -27,7 +27,7 @@ export default function ContactUsPage() {
     <div className="w-full lg:h-[calc(100vh-80px)] h-[calc(100vh-48px)] flex flex-col lg:items-center lg:justify-center justify-start gap-8 p-4">
             <div className="flex flex-col lg:items-start lg:justify-start lg:w-1/2 w-full gap-2">
                 <h2 className="font-boldonse text-4xl">Contact us</h2>
-                <p className="font-montserrat text-sm text-mid">Have a question? Send us a message and we'll get back to you as soon as possible.</p>
+                <p className="font-montserrat text-sm text-mid">Have a question? Send us a message and we&apos;ll get back to you as soon as possible.</p>
             </div>
             <form onSubmit={onSubmit} className="lg:w-1/2 w-full flex flex-col gap-4">
             <div className="flex gap-4 w-full">

@@ -95,6 +95,10 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                                 <label className="text-[11px] font-bold uppercase tracking-wider text-mid block mb-0.5">Contact Line</label>
                                 <p className="font-medium tracking-wider">{order.address.receiver_phone_number}</p>
                             </div>
+                            <div>
+                                <label className="text-[11px] font-bold uppercase tracking-wider text-mid block mb-0.5">Payment Method</label>
+                                <p className="font-medium uppercase tracking-wide">{order.address.receiver_payment_method === "cash_on_delivery" ? "Cash on Delivery" : "E-Payment"}</p>
+                            </div>
                         </div>
                     </div>
 
@@ -118,10 +122,11 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                             <div>
                                 <label className="text-[11px] font-bold uppercase tracking-wider text-mid block mb-0.5">Destination Route</label>
                                 <p className="font-medium text-xs uppercase tracking-wide leading-relaxed">
-                                    {order.address.address_line_1}
-                                    {order.address.address_line_2 && `, ${order.address.address_line_2}`}
+                                    {order.address.receiver_area}
                                     <br />
-                                    {order.address.city}, {order.address.state || order.address.country}
+                                    Building {order.address.receiver_building}, Floor {order.address.receiver_floor}
+                                    <br />
+                                    {order.address.receiver_directions}
                                 </p>
                             </div>
                         </div>
@@ -141,7 +146,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-muted text-sm text-black">
-                                {order.items?.map((item: any) => (
+                                {order.items?.map((item) => (
                                     <tr key={item.id} className="hover:bg-neutral-50/70 transition-colors">
                                         <td className="py-4 px-6">
                                             <div className="flex flex-col">

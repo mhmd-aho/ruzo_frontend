@@ -1,12 +1,12 @@
-"use client"
+"use client";
 import { getBestSellers } from "@/app/action";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ItemCard from "./item-card";
 import { ProductSchema } from "@/lib/schemas";
 
-const AUTOPLAY_DELAY = 3000; // ms between auto-advances
-const RESUME_DELAY = 6000;   // ms of inactivity before autoplay resumes
+const AUTOPLAY_DELAY = 3000;
+const RESUME_DELAY = 6000;
 
 export default function BestSeller() {
     const [bestSellers, setBestSellers] = useState<ProductSchema[]>([]);
@@ -20,7 +20,6 @@ export default function BestSeller() {
     const autoplayTimer = useRef<ReturnType<typeof setInterval> | null>(null);
     const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // fetch data
     useEffect(() => {
         const getdata = async () => {
             const res = await getBestSellers();
@@ -31,72 +30,6 @@ export default function BestSeller() {
         if (bestSellers.length === 0) {
             getdata();
         }
-    }, [bestSellers]);
-
-    // build the seamless GSAP loop once cards are in the DOM
-    useEffect(() => {
-        if (bestSellers.length === 0) return;
-
-        const cards = cardRefs.current.filter(Boolean) as HTMLLIElement[];
-        if (cards.length === 0) return;
-
-        const spacing = 1 / cards.length;
-        spacingRef.current = spacing;
-
-        // Set initial state: out of frame hidden elements start at 0 opacity
-        gsap.set(cards, { xPercent: 250, opacity: 0, scale: 0.6 });
-
-        const animateFunc = (element: HTMLElement) => {
-            const tl = gsap.timeline();
-            tl.fromTo(
-                element,
-                { scale: 0.6, opacity: 0.25, zIndex: 10 },
-                {
-                    scale: 1,
-                    opacity: 1,
-                    zIndex: 100,
-                    duration: 0.5,
-                    yoyo: true,
-                    repeat: 1,
-                    ease: "power2.out",
-                    immediateRender: false,
-                }
-            ).fromTo(
-                element,
-                { xPercent: 220 },
-                { xPercent: -220, duration: 1, ease: "none", immediateRender: false },
-                0
-            );
-            return tl;
-        };
-
-        const seamlessLoop = buildSeamlessLoop(cards, spacing, animateFunc);
-        seamlessLoopRef.current = seamlessLoop;
-
-        const playhead = playheadRef.current;
-        playhead.offset = 0;
-        const wrapTime = gsap.utils.wrap(0, seamlessLoop.duration());
-
-        const scrub = gsap.to(playhead, {
-            offset: 0,
-            duration: 0.5,
-            ease: "power3.out",
-            paused: true,
-            onUpdate() {
-                seamlessLoop.time(wrapTime(playhead.offset));
-            },
-        });
-        scrubRef.current = scrub;
-
-        startAutoplay();
-
-        return () => {
-            seamlessLoop.kill();
-            scrub.kill();
-            if (autoplayTimer.current) clearInterval(autoplayTimer.current);
-            if (resumeTimer.current) clearTimeout(resumeTimer.current);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [bestSellers]);
 
     const goTo = (index: number) => {
@@ -126,16 +59,85 @@ export default function BestSeller() {
         resumeTimer.current = setTimeout(startAutoplay, RESUME_DELAY);
     };
 
+    useEffect(() => {
+        if (bestSellers.length === 0) return;
+
+        const cards = cardRefs.current.filter(Boolean) as HTMLLIElement[];
+        if (cards.length === 0) return;
+
+        const spacing = 1 / cards.length;
+        spacingRef.current = spacing;
+
+        // Base initialization: all elements center-aligned over left: 50%
+        gsap.set(cards, { xPercent: -50, opacity: 0, scale: 0.7, x: 0 });
+
+        const animateFunc = (element: HTMLElement) => {
+            const tl = gsap.timeline();
+            
+            // 1. Scale, Opacity, and Layer Depth (zIndex) configuration
+            tl.fromTo(
+                element,
+                { scale: 0.7, opacity: 0.35, zIndex: 10 },
+                {
+                    scale: 1,
+                    opacity: 1,
+                    zIndex: 100,
+                    duration: 0.5,
+                    yoyo: true,
+                    repeat: 1,
+                    ease: "power2.inOut",
+                    immediateRender: false,
+                }
+            )
+            // 2. Horizontal movement tracking: 
+            // Slides in from the right peek zone, settles center, departs to the left peek zone
+            .fromTo(
+                element,
+                { x: "120%" }, 
+                { x: "-120%", duration: 1, ease: "none", immediateRender: false },
+                0
+            );
+            return tl;
+        };
+
+        const seamlessLoop = buildSeamlessLoop(cards, spacing, animateFunc);
+        seamlessLoopRef.current = seamlessLoop;
+
+        const playhead = playheadRef.current;
+        playhead.offset = 0;
+        const wrapTime = gsap.utils.wrap(0, seamlessLoop.duration());
+
+        const scrub = gsap.to(playhead, {
+            offset: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            paused: true,
+            onUpdate() {
+                seamlessLoop.time(wrapTime(playhead.offset));
+            },
+        });
+        scrubRef.current = scrub;
+
+        startAutoplay();
+
+        return () => {
+            seamlessLoop.kill();
+            scrub.kill();
+            if (autoplayTimer.current) clearInterval(autoplayTimer.current);
+            if (resumeTimer.current) clearTimeout(resumeTimer.current);
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [bestSellers]);
+
     return (
-        <div className="relative w-full flex flex-col items-center gap-6 overflow-visible">
-            {/* Added 3D perspective and allowed cards to look seamless across boundaries */}
-            <ul className="relative w-full h-[460px] overflow-visible list-none p-0 m-0 [perspective:1000px]">
+        <div className="relative w-full flex flex-col items-center gap-6 overflow-hidden">
+            <ul className="relative w-full lg:h-[540px] h-[340px] list-none p-0 m-0 [perspective:1200px] [transform-style:preserve-3d]">
                 {bestSellers.length > 0 ? (
                     bestSellers.map((item, i) => (
                         <li
                             key={item.id}
                             ref={(el) => { cardRefs.current[i] = el; }}
-                            className="absolute top-0 left-1/2 -translate-x-1/2 w-64 transition-opacity custom-carousel-card"
+                            className="absolute top-0 left-1/2 lg:w-[392px] w-[220px] custom-carousel-card"
                         >
                             <ItemCard product={item} admin={false} />
                         </li>
@@ -148,7 +150,7 @@ export default function BestSeller() {
             </ul>
 
             {bestSellers.length > 0 && (
-                <div className="flex gap-2 z-20">
+                <div className="flex gap-2 z-20 mt-4">
                     {bestSellers.map((_, i) => (
                         <button
                             key={i}
@@ -178,7 +180,6 @@ function buildSeamlessLoop(
         paused: true,
         repeat: -1,
         onRepeat() {
-            // @ts-expect-error - internal GSAP fix from the original pen
             if (this._time === this._dur) this._tTime += this._dur - 0.01;
         },
     });
