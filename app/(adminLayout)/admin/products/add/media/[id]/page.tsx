@@ -3,7 +3,7 @@ import AddMedia from "@/components/app/add-media"
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
-export default async function AddMediaPage({params}:{params:{id:string}}) {
+export default async function AddMediaPage({params}:{params:Promise<{id:string}>}) {
    const {id} = await params;
    let product = null
    const cookieStore = await cookies();
@@ -12,7 +12,7 @@ export default async function AddMediaPage({params}:{params:{id:string}}) {
     return redirect("/admin/signin");
    }
    try{
-     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`, withCacheTags(CACHE_TAGS.product(id)))
+     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/${id}/`, withCacheTags(CACHE_TAGS.product(id)))
      product = await res.json();
    }catch(err){
     return (

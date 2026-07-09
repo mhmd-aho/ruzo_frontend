@@ -28,7 +28,6 @@ export default function AddProductPage() {
                     getSizes(),
                     getCategories()
                 ]);
-                
                 if (res1.success && res2.success && res3.success) {
                     setColors(res1.data);
                     setSizes(res2.data);

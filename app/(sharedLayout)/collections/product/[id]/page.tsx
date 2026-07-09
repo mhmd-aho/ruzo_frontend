@@ -45,13 +45,15 @@ export default async function Product({
     const productVariants: ProductVariantsSchema[] = product?.variants ?? [];
     let images: string[] = [];
 
-    const colorVariants = color
+    const activeColor = color || product?.default_img?.color?.name;
+
+    const colorVariants = activeColor
         ? productVariants.filter(
-            (v) => v.color.name.toLowerCase() === color.toLowerCase()
+            (v) => v.color.name.toLowerCase() === activeColor.toLowerCase()
           )
         : [];
 
-    const selectedVariant = (color && size)
+    const selectedVariant = (activeColor && size)
         ? colorVariants.filter(
             (v) => v.size.name.toLowerCase() === size.toLowerCase()
           )
@@ -92,8 +94,8 @@ export default async function Product({
 
     return (
         <>
-            <section className="w-full lg:h-[calc(100vh-80px)]">
-                <div className="flex flex-col lg:flex-row items-start justify-center lg:gap-16 gap-6 lg:h-[calc(100vh-80px)] lg:px-10 px-5 pb-8">
+            <section className="w-full flex flex-col ">
+                <div className="flex flex-col lg:flex-row items-start justify-center lg:gap-16 gap-6 h-fit lg:h-[calc(100vh-80px)] lg:p-10 px-5 pb-8">
                     <ProductGallery images={galleryImages} alt={product?.name || "Product Image"} />
                     {product && <AddToCartForm sizes={sizes} colors={colors} product={product} quantity={selectedVariant?.[0]?.quantity || 0} />}
                 </div>

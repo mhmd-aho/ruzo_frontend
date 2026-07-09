@@ -2,22 +2,20 @@ import QuantityCart from "../input/quantity-cart";
 import { Exit } from "../svg/exit";
 import { ProductVariantsSchema } from "@/lib/schemas";
 import Image from "next/image";
-import { getVariantImage,deleteItemFromCart } from "@/app/action";
-import { useState,useEffect } from "react";
+import { deleteItemFromCart } from "@/app/action";
+import { toast } from "sonner";
+
 export default function CartItems({id,productVariant,quantity}: {id:number,productVariant: ProductVariantsSchema,quantity: number}) {
-    const [media,setMedia] = useState<string>("");
-    useEffect(() => {
-       getVariantImage(productVariant.id).then((media) => setMedia(media));
-    },[productVariant.id])
     const handleDeleteItemFromCart = async () => {
         const res = await deleteItemFromCart(id);
         if(res.success){
-            alert(res.message)
+            toast.success(res.message);
+            window.dispatchEvent(new Event("cart-updated"));
         } else {
-            alert(res.error)
+            toast.error(res.error);
         }
     }
-    
+    const media = productVariant.product.default_img.media_url
     return (
         <div className="flex gap-2 h-32 w-full relative ">
             <div className="h-full w-28 relative">

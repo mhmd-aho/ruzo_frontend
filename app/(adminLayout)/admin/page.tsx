@@ -26,7 +26,7 @@ export default async function AdminPage(){
         <div className="w-full h-[150vh] lg:h-[calc(100vh-112px)] grid grid-cols-2 grid-rows-6  gap-4 p-5">
             <div className="border border-muted rounded-md col-span-1 row-span-1 lg:row-span-2 p-2 flex flex-col justify-between">
                 <h2 className="text-mid">Total Revenue</h2>
-                <h1 className="text-3xl font-boldonse">${totalRevenue}</h1>
+                <h1 className="text-3xl font-boldonse">${totalRevenue.toFixed(2)}</h1>
                 <p className="text-muted">Revenue from all sales</p>
             </div>
             <div className="border border-muted rounded-md col-span-1 row-span-1 lg:row-span-2 p-2 flex flex-col justify-between">
@@ -34,8 +34,13 @@ export default async function AdminPage(){
                 <h1 className="text-3xl font-boldonse">{orders.length}</h1>
                 <p className="text-muted">Orders from all sales</p>
             </div>
-            <div className="border border-muted rounded-md col-span-2 lg:col-span-1 lg:row-span-4 row-span-2 p-2 flex flex-col justify-between ">
-                
+            <div className="border border-muted rounded-md col-span-2 lg:col-span-1 lg:row-span-4 row-span-2 p-2 flex flex-col justify-between">
+                <h2 className="text-mid">Sales Analytics</h2>
+                <div className="flex-1 flex flex-col items-center justify-center text-muted">
+                    <p className="font-semibold text-lg">Chart</p>
+                    <p className="text-xs text-mid mt-1 font-montserrat">Chart will be available soon</p>
+                </div>
+                <p className="text-muted">Analytics and visual trends</p>
             </div>
             <div className="border border-muted rounded-md col-span-2 lg:col-span-1 row-span-3 lg:row-span-4 p-2 flex flex-col justify-between">
                 <div className="flex justify-between items-center">
@@ -51,6 +56,7 @@ export default async function AdminPage(){
                     </div>
                     {orders.map((order:OrderSchema) => {
                         const date = new Date(order.created_at);
+                        
                         return(
                         <div key={order.id} className="flex justify-between items-center text-center">
                                 <p className={`${order.status === "pending" ? "text-yellow-500" : order.status === "shipped" ? "text-blue-500" : "text-green-500"} w-32`}>{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</p>

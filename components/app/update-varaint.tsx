@@ -7,15 +7,16 @@ interface UpdateVariantProps {
     variant: ProductVariantsSchema;
     isPending: boolean;
     handleUpdateQuantity: (variant: ProductVaraintInputSchema) => void;
+    id:number;
 }
 
-export default function UpdateVaraint({ variant, isPending, handleUpdateQuantity }: UpdateVariantProps) {
+export default function UpdateVaraint({ variant, isPending, handleUpdateQuantity, id }: UpdateVariantProps) {
     const [updateData, setUpdateData] = useState<ProductVaraintInputSchema>({
         id: variant.id,
         quantity: variant.quantity,
         color_id: variant.color.id,
         size_id: variant.size.id,
-        product_id: variant.product.id,
+        product_id: id,
     });
 
     const handleQuantityChange = (method: 'add' | 'sub') => {

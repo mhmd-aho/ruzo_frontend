@@ -21,7 +21,7 @@ export default function AddToCartForm({
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const selectedColor = searchParams.get('color');
+    const selectedColor = searchParams.get('color') || product?.default_img?.color?.name;
     const selectedSize = searchParams.get('size');
     const handleSelectedColor = (color: ColorSchema) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -33,7 +33,7 @@ export default function AddToCartForm({
         params.set('size', sizeName);
         router.push(`${pathname}?${params.toString()}`, {scroll: false});
     }
-
+    const [error, setError] = useState<boolean>(false);
     const [userQuantity, setUserQuantity] = useState<number>(0);
     const [prevSelectionKey, setPrevSelectionKey] = useState(`${selectedColor}-${selectedSize}`);
     const selectionKey = `${selectedColor}-${selectedSize}`;
@@ -46,13 +46,15 @@ export default function AddToCartForm({
         sizes.some((s: SizeSchema) => s.name.toLowerCase() === size.toLowerCase())
 )
     const handleAddToCart = async () => {
-        if (!selectedColor || !selectedSize) {
+        if (!selectedColor || !selectedSize || userQuantity === 0) {
+            setError(true);
             return;
         }
         const result = await addToCart(product.id, selectedColor, selectedSize, userQuantity);
         
         if (result?.success) {
             toast.success(result.message);
+            window.dispatchEvent(new Event("cart-updated"));
         } else {
             toast.error(result?.error || "Something went wrong");
         }
@@ -74,6 +76,11 @@ export default function AddToCartForm({
                         ></button>
                     ))}
                 </div>
+                {
+                    !selectedColor && error && (
+                        <p className="text-red-500 text-sm ml-1">Please select a color</p>
+                    )
+                }
             </div>
             <div className="flex flex-col lg:gap-3 gap-1">
                 <p className="font-bold text-black">Size: <span className="text-mid ml-1">{selectedSize ? selectedSize : 'Select a size'}</span></p>
@@ -92,6 +99,11 @@ export default function AddToCartForm({
                         )
                     })}
                 </div>
+                {
+                    !selectedSize && error && (
+                        <p className="text-red-500 text-sm ml-1">Please select a size</p>
+                    )
+                }
             </div>
             <div className="flex flex-col lg:gap-3 gap-1">
                 <p className="font-bold text-black">Quantity:</p>
@@ -101,6 +113,11 @@ export default function AddToCartForm({
                     <button disabled={userQuantity === quantity} type="button" onClick={() => setUserQuantity(userQuantity + 1)}><Plus fill='black' /></button>
                 </div>
                 {quantity > 0 && <p className="text-mid ml-1">Available: {quantity - userQuantity}</p>}
+                {
+                    userQuantity === 0 && error && (
+                        <p className="text-red-500 text-sm ml-1">Please select a quantity</p>
+                    )
+                }
             </div>
             
             <button onClick={handleAddToCart} className="bg-primary text-white w-full lg:h-14 h-12">Add to cart</button>

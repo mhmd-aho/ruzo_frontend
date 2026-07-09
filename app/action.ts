@@ -17,19 +17,6 @@ const getVariant = async (id: number, selectedColor: string, selectedSize: strin
     return data;
 }
 
-export const getVariantImage = async (id: number) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/${id}/media/`,{
-        headers: {
-            "Content-Type": "application/json",
-        },
-        ...withCacheTags(CACHE_TAGS.productMedia(id), CACHE_TAGS.product(id)),
-    })
-    const data = await res.json();
-    if(!res.ok){
-        throw new Error("Failed to fetch product variant image")
-    }
-    return data[0].media_url;
-}
 // handle submit 
 export const addToCart = async (id: number, selectedColor: string, selectedSize: string, quantity: number) => {
     if (!selectedColor || !selectedSize) {
@@ -100,7 +87,7 @@ export const getCartItems = async () =>{
             "Content-Type": "application/json",
             "Cookie": cookieHeader,
         },
-        cache: "no-store",
+        ...withCacheTags(CACHE_TAGS.cart),
     });
     const data = await res.json();
     if(!res.ok){
@@ -120,12 +107,29 @@ export const deleteItemFromCart = async (id: number) => {
             "Cookie": cookieHeader,
         },
     });
-    const data = await res.json();
-    if(!res.ok){
-        return {success:false,error:data.error || "Failed to delete item from cart"};
+
+    if (!res.ok) {
+        let errorMsg = "Failed to delete item from cart";
+        try {
+            const data = await res.json();
+            errorMsg = data.error || errorMsg;
+        } catch {
+            // ignore
+        }
+        return { success: false, error: errorMsg };
+    }
+
+    let message = "Item deleted from cart";
+    if (res.status !== 204) {
+        try {
+            const data = await res.json();
+            message = data.message || message;
+        } catch {
+            // ignore
+        }
     }
     revalidateCartCache();
-    return {success:true,message:data.message || "Item deleted from cart"};
+    return { success: true, message };
 }
 export const updateCartItemQuantity = async (id: number, action: 'increase' | 'decrease') => {
     
@@ -182,28 +186,63 @@ export const placeOrder = async (data: addressFormType) =>{
     return {success:true,message:result.message || "Order placed successfully"};
 }
 export const getCategories = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/categories/`, withCacheTags(CACHE_TAGS.categories))
-    const data = await res.json();
-    if(!res.ok){
-        return {success:false,error:data.error || "Failed to get categories"};
+    try {
+        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}products/categories/`;
+    
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) {
+            const contentType = res.headers.get("content-type");
+            let errorMsg = "Failed to get categories";
+            if (contentType && contentType.includes("application/json")) {
+                const errorData = await res.json();
+                errorMsg = errorData.error || errorMsg;
+            }
+            return { success: false, error: errorMsg };
+        }
+        const data = await res.json();
+        return { success: true, data: data };
+    } catch (err) {
+        return { success: false, error: err instanceof Error ? err.message : "Failed to get categories" };
     }
-    return {success:true,data:data};
 }
-export const getColors = async ()=>{
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/colors/`, withCacheTags(CACHE_TAGS.colors))
-    const data = await res.json();
-    if(!res.ok){
-        return {success:false,error:data.error || "Failed to get colors"};
+export const getColors = async () => {
+    try {
+        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}products/colors/`;
+
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) {
+            const contentType = res.headers.get("content-type");
+            let errorMsg = "Failed to get colors";
+            if (contentType && contentType.includes("application/json")) {
+                const errorData = await res.json();
+                errorMsg = errorData.error || errorMsg;
+            }
+            return { success: false, error: errorMsg };
+        }
+        const data = await res.json();
+        return { success: true, data: data };
+    } catch (err) {
+        return { success: false, error: err instanceof Error ? err.message : "Failed to get colors" };
     }
-    return {success:true,data:data};
 }
-export const getSizes = async ()=>{
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/sizes/`, withCacheTags(CACHE_TAGS.sizes))
-    const data = await res.json();
-    if(!res.ok){
-        return {success:false,error:data.error || "Failed to get sizes"};
+export const getSizes = async () => {
+    try {
+        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}products/sizes/`;
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) {
+            const contentType = res.headers.get("content-type");
+            let errorMsg = "Failed to get sizes";
+            if (contentType && contentType.includes("application/json")) {
+                const errorData = await res.json();
+                errorMsg = errorData.error || errorMsg;
+            }
+            return { success: false, error: errorMsg };
+        }
+        const data = await res.json();
+        return { success: true, data: data };
+    } catch (err) {
+        return { success: false, error: err instanceof Error ? err.message : "Failed to get sizes" };
     }
-    return {success:true,data:data};
 }
 
 export const getBestSellers = async () => {
@@ -233,19 +272,32 @@ export const adminLogin = async (data:z.infer<typeof AdminSignInSchema>) => {
             },
             body: JSON.stringify(data),
         });
-        const result = await res.json();
+        
+        const contentType = res.headers.get("content-type");
+        let result: any;
+        if (contentType && contentType.includes("application/json")) {
+            result = await res.json();
+        } else {
+            return {success:false,error:`Server returned non-JSON response (${res.status})`};
+        }
+
         if(!res.ok){
-            return {success:false,error:result.error || "Failed to login"};
+            const errorMsg = result.error || 
+                             (result.non_field_errors && result.non_field_errors[0]) || 
+                             (result.username && `Username: ${result.username[0]}`) ||
+                             (result.password && `Password: ${result.password[0]}`) ||
+                             "Failed to login";
+            return {success:false,error:errorMsg};
         }
         const cookieStore = await cookies();
         cookieStore.set("admin_token", result.token, { maxAge: 60 * 60 * 24 * 7, httpOnly: true });
         if(result.is_superuser){
             return {success:true,data:result};
         }else{
-            return {success:false,error:result.error || "You are not authorized to login as admin"};
+            return {success:false,error:"You are not authorized to login as admin"};
         }
     }catch(err){
-        return {success:false,error:"Failed to login"};
+        return {success:false,error: err instanceof Error ? err.message : "Failed to login"};
     }
 }
 export const getAdminProducts = async () => {
@@ -273,7 +325,6 @@ export async function createProductWithVariants(productData: ProductInputSchema,
         // 1. Get the admin token securely from the server session cookies
         const cookieStore = await cookies();
         const token = cookieStore.get("admin_token")?.value;
-        console.log(productData);
         if (!token) {
             return { success: false, error: "Unauthorized: Missing admin access token." };
         }
@@ -478,5 +529,77 @@ export async function createProductMedia(productId: number, colorId: number, med
         return { success: true };
     } catch {
         return { success: false, error: "Network error saving uploaded media." };
+    }
+}
+
+export const closeBulk = async () => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if(!token){
+        return {success:false,error:"Admin token not found"};
+    }
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/close-bulk/`, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Token ${token}`,
+            },
+        });
+        const result = await res.json();
+        if(!res.ok){
+            return {success:false,error:result.error || result.message || "Failed to close bulk session"};
+        }
+        return {success:true,message:result.message || "Bulk session successfully closed.", bulk_id: result.bulk_id};
+    } catch {
+        return {success:false,error:"Failed to close bulk session due to network error."};
+    }
+}
+export const createCategory = async (name: string) => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if(!token){
+        return {success:false,error:"Admin token not found"};
+    }
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/categories/create/`, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Token ${token}`,
+            },
+            body: JSON.stringify({ name }),
+        });
+        const result = await res.json();
+        if(!res.ok){
+            return {success:false,error:result.error || "Failed to create category"};
+        }
+        return {success:true,data:result};
+    } catch {
+        return {success:false,error:"Failed to create category due to network error."};
+    }
+}
+export const createSize = async (name: string) => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if(!token){
+        return {success:false,error:"Admin token not found"};
+    }
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/sizes/create/`, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Token ${token}`,
+            },
+            body: JSON.stringify({ name }),
+        });
+        const result = await res.json();
+        if(!res.ok){
+            return {success:false,error:result.error || "Failed to create category"};
+        }
+        return {success:true,data:result};
+    } catch {
+        return {success:false,error:"Failed to create category due to network error."};
     }
 }

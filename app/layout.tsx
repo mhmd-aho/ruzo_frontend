@@ -30,7 +30,7 @@ export default function RootLayout({
       className={`${boldonse.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-screen w-full flex flex-col">
-        <Toaster position="top-center"/>
+        <Toaster duration={3000} position="top-center"/>
         {children}
       </body>
     </html>

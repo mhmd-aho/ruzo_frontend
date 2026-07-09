@@ -1,7 +1,7 @@
 import { ProductSchema } from "@/lib/schemas";
 import Link from "next/link";
 import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
-
+import BackArrow from "@/components/svg/back-arrow";
 export default async function EditProduct({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     let product: ProductSchema | null = null;
@@ -25,7 +25,10 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
     const img = product?.default_img?.media_url || "";
 
     return (
-        <div className="bg-white py-12 px-4 sm:px-6 lg:px-8 font-montserrat">
+        <div className="bg-white py-12 px-4 sm:px-6 lg:px-8 font-montserrat flex flex-col  gap-2">
+            <div className="flex gap-4 items-center ">
+                <Link className="lg:text-xl text-sm flex items-center gap-2" href="/admin/products"> <BackArrow/>Back</Link>
+            </div>
             {product ? (
                 <div className="max-w-4xl mx-auto bg-white border border-muted shadow-sm overflow-hidden">
                     <div className="md:flex">
@@ -78,7 +81,15 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
                     </div>
 
                     <div className="border-t border-muted bg-white p-8">
-                        <h3 className="text-xl font-boldonse uppercase tracking-wider text-black mb-6">Inventory Variants</h3>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                            <h3 className="text-xl font-boldonse uppercase tracking-wider text-black">Inventory Variants</h3>
+                            <Link
+                                href={`/admin/products/edit/${product.id}/variants`}
+                                className="inline-flex items-center justify-center px-6 h-12 bg-primary hover:bg-black text-white font-montserrat text-xs uppercase tracking-widest font-bold transition-all duration-300 rounded-none cursor-pointer"
+                            >
+                                Edit Stock
+                            </Link>
+                        </div>
                         <div className="overflow-x-auto border border-muted bg-white">
                             <table className="w-full text-left border-collapse">
                                 <thead>
@@ -86,7 +97,6 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
                                         <th className="py-4 px-4 sm:px-6 font-semibold">Size</th>
                                         <th className="py-4 px-4 sm:px-6 font-semibold">Color</th>
                                         <th className="py-4 px-4 sm:px-6 font-semibold">Stock Level</th>
-                                        <th className="py-4 px-4 sm:px-6 font-semibold text-right">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-muted text-sm text-black">
@@ -110,14 +120,6 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
                                                 }`}>
                                                     {variant.quantity} units
                                                 </span>
-                                            </td>
-                                            <td className="py-4 px-4 sm:px-6 text-right">
-                                                <Link
-                                                    href={`/admin/products/edit/${product.id}/variants`}
-                                                    className="inline-flex items-center justify-center text-xs font-bold uppercase tracking-widest text-primary hover:text-white border border-primary hover:bg-primary px-4 py-2 transition-all duration-300 rounded-none"
-                                                >
-                                                    Edit Stock
-                                                </Link>
                                             </td>
                                         </tr>
                                     ))}

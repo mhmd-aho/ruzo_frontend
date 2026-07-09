@@ -1,13 +1,13 @@
 "use client"
 import { getCategories } from "@/app/action"
 import { CategorySchema, ProductInputSchema, ProductSchema } from "@/lib/schemas"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
 import { updateProduct } from "@/app/action"
 import { useRouter } from "next/navigation"
-
 export default function EditProductForm({product}: {product: ProductSchema}) {
     const [categories,setCategories] = useState<CategorySchema[]>([]) 
+    const [isPending,startTransition] = useTransition();
     const router = useRouter();
     useEffect(()=>{
         const fetchCategories = async () => {
@@ -29,6 +29,7 @@ export default function EditProductForm({product}: {product: ProductSchema}) {
     })
     const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        startTransition(async () => {
         const res = await updateProduct(product.id,data);
         if(!res.success){
             toast.error(res.error)
@@ -36,6 +37,7 @@ export default function EditProductForm({product}: {product: ProductSchema}) {
         }
         toast.success('Product updated successfully')
         router.push('/admin/products')
+    })
     }
     return (
         <form onSubmit={handleUpdate} className="flex flex-col gap-6 w-full font-montserrat">
@@ -98,10 +100,11 @@ export default function EditProductForm({product}: {product: ProductSchema}) {
             </div>
             <div className="flex justify-end mt-4">
                 <button 
+                disabled={isPending}
                     type="submit"
-                    className="inline-flex items-center justify-center px-8 h-12 bg-primary hover:bg-black text-white font-montserrat text-xs uppercase tracking-widest font-bold transition-all duration-300 rounded-none cursor-pointer w-full md:w-auto"
+                    className={`inline-flex items-center justify-center px-8 h-12 ${isPending ? 'bg-muted' : 'bg-primary hover:bg-black'} text-white font-montserrat text-xs uppercase tracking-widest font-bold transition-all duration-300 rounded-none cursor-pointer w-full md:w-auto`}
                 >
-                    Update
+                    {isPending ? "Updating..." : "Update"}
                 </button>
             </div>
         </form>

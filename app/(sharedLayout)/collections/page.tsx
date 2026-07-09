@@ -1,10 +1,10 @@
-import Image from "next/image";
-import bg from "@/public/hero.png";
 import ItemCard from "@/components/app/item-card";
 import Filters from "@/components/app/filters";
 import { ProductSchema } from "@/lib/schemas";
 import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 import { Metadata } from "next";
+import { getOptimizedImageUrl } from "@/lib/utils";
+
 export const metadata:Metadata = {
     title: "Ruzo | Collections",
     description: "Discover the best collections at Ruzo",
@@ -25,14 +25,13 @@ export default async function Collections({
         if (size) queryParams.set("size", size);
 
         const queryString = queryParams.toString();
-        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}products/${queryString ? `?${queryString}` : ""}`;
-
-        const res = await fetch(url, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/${queryString ? `?${queryString}` : ""}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             },
             ...withCacheTags(CACHE_TAGS.products),
+            cache: "no-store",
         });
 
         const data = await res.json();
@@ -47,9 +46,13 @@ export default async function Collections({
     return (
         <main className="h-fit w-full flex flex-col lg:gap-12 gap-4">
             <section className="h-[calc(100vh-48px)] lg:h-[calc(100vh-80px)] relative">
-                <div className="top-0 left-0 w-full h-full relative">
-                    <Image src={bg} alt="" fill className="object-cover" priority />
-                </div>
+                <img 
+                    src={getOptimizedImageUrl("https://3yrpgg4xvr.ucarecd.net/3d5106d6-cbc8-40b3-bae8-f78d096665e1/0B7A7879copy.webp", 1600, 1000, "preview")} 
+                    alt="The Solis Draped" 
+                    className="absolute top-0 left-0 w-full h-full object-center object-cover" 
+                    decoding="async"
+                    loading="eager"
+                />
             </section>
             <section className="min-h-screen flex flex-col lg:flex-row items-center lg:items-start lg:px-28 gap-6 pb-10">
                 <Filters />

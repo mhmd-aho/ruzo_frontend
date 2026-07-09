@@ -27,7 +27,7 @@ export default async function OrdersPage() {
 
     return (
         <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8 font-montserrat">
-            <div className="max-w-5xl mx-auto bg-white border border-muted p-8 shadow-sm flex flex-col gap-8">
+            <div className="max-w-5xl mx-auto bg-white border border-muted lg:p-8 p-4 shadow-sm flex flex-col gap-8">
                 <div className="border-b border-muted pb-6">
                     <h1 className="text-3xl font-boldonse uppercase tracking-wider text-black">Order Management</h1>
                     <p className="text-sm text-mid mt-1 font-semibold uppercase tracking-wider">

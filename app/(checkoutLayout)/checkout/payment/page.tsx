@@ -2,6 +2,8 @@ import AddressForm from "@/components/app/addres-form";
 import { getCartItems } from "@/app/action";
 import { CartItemSchema } from "@/lib/schemas";
 import { Metadata } from "next";
+import { getOptimizedImageUrl } from "@/lib/utils";
+
 export const metadata: Metadata = {
     title: "Ruzo | Payment",
     description: "Complete your payment",
@@ -24,30 +26,34 @@ export default async function Payment() {
            <div className="lg:w-1/2 w-full h-5/6 flex flex-col items-center gap-2">
             <h2 className="font-boldonse text-2xl">Your Order</h2>
             <div className="w-full flex-1 max-lg:max-h-96 flex flex-col overflow-y-auto gap-1">
-                {cartItems.map((item: CartItemSchema) => (
-                    <div key={item.id} className="h-32 flex gap-2">
-                        <div className="bg-black h-full w-28"/>
-                        <div>
+                {cartItems.map((item: CartItemSchema) => {
+                    const imgUrl = item.product_variant.product.default_img?.media_url;
+                    return (
+                        <div key={item.id} className="h-32 flex gap-2">
+                            {imgUrl ? (
+                                <img 
+                                    src={getOptimizedImageUrl(imgUrl, 224, 256, "scale_crop", "center")} 
+                                    alt={item.product_variant.product.name} 
+                                    className="h-full w-28 object-cover"
+                                    decoding="async"
+                                />
+                            ) : (
+                                <div className="h-full w-28 bg-neutral-100 flex items-center justify-center text-[10px] text-mid uppercase font-bold text-center">No Img</div>
+                            )}
+                            <div>
                             <p>{item.product_variant.product.name}</p>
                             <p>Color: {item.product_variant.color.name}</p>
                             <p>Size: {item.product_variant.size.name}</p>
                             <p>${item.product_variant.product.price * item.quantity}<span className="text-sm text-mid font-bold">({item.product_variant.product.price} x {item.quantity})</span></p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
             <div className="w-full border-t-2 border-muted">
                 <div className="flex justify-between w-full">
-                    <p>Subtotal</p>
-                    <p>${subTotal}</p>
-                </div>
-                <div className="flex justify-between w-full">
-                    <p>Shipping</p>
-                    <p>$5</p>
-                </div>
-                <div className="flex justify-between w-full">
                     <p>Total</p>
-                    <p>${subTotal + 5}</p>
+                    <p>${subTotal }</p>
                 </div>
                 <p className="text-sm text-mid">The total amount you pay includes all applicable customs duties & taxes. We guarantee no additional charges on delivery</p>
             </div>

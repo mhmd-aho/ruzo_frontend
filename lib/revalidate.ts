@@ -1,25 +1,23 @@
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 
-const REVALIDATE_PROFILE = "max" as const;
-
 export function revalidateProductCaches(productId?: number | string) {
-    revalidateTag(CACHE_TAGS.products, REVALIDATE_PROFILE);
-    revalidateTag(CACHE_TAGS.bestSellers, REVALIDATE_PROFILE);
-    revalidateTag(CACHE_TAGS.search, REVALIDATE_PROFILE);
+    updateTag(CACHE_TAGS.products);
+    updateTag(CACHE_TAGS.bestSellers);
+    updateTag(CACHE_TAGS.search);
     if (productId != null) {
-        revalidateTag(CACHE_TAGS.product(productId), REVALIDATE_PROFILE);
-        revalidateTag(CACHE_TAGS.productMedia(productId), REVALIDATE_PROFILE);
+        updateTag(CACHE_TAGS.product(productId));
+        updateTag(CACHE_TAGS.productMedia(productId));
     }
 }
 
 export function revalidateCartCache() {
-    revalidateTag(CACHE_TAGS.cart, REVALIDATE_PROFILE);
+    updateTag(CACHE_TAGS.cart);
 }
 
 export function revalidateOrderCaches(orderId?: string) {
-    revalidateTag(CACHE_TAGS.orders, REVALIDATE_PROFILE);
+    updateTag(CACHE_TAGS.orders);
     if (orderId) {
-        revalidateTag(CACHE_TAGS.order(orderId), REVALIDATE_PROFILE);
+        updateTag(CACHE_TAGS.order(orderId));
     }
 }

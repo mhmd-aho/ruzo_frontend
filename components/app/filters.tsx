@@ -70,7 +70,7 @@ export default function Filters() {
 
     return (
         <div className="lg:w-1/4 w-full h-fit flex flex-col items-start justify-start gap-4">
-            <button onClick={() => setShowFilters(!showFilters)} className="flex items-center justify-center w-full lg:hidden cursor-pointer border border-primary p-2 font-semibold">
+            <button onClick={() => setShowFilters(!showFilters)} className="flex items-center justify-center w-full lg:hidden cursor-pointer  p-2 font-semibold">
                 <Filter />
                 Filters
             </button>

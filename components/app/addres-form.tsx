@@ -10,10 +10,12 @@ import { placeOrder } from "@/app/action";
 import { z } from "zod";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 type addressFormType = z.infer<typeof AddressFormSchema>
 export default function AddressForm(){
   const [isPending,startTransition] = useTransition();
   const [areas,setAreas] = useState<areaSchema[]>([]);
+  const router = useRouter();
    useEffect(() => {
       const getAreas = async () => {
          const result = await getWakilniAreas();
@@ -45,6 +47,8 @@ export default function AddressForm(){
         const res = await placeOrder(data);
         if(res.success){
           toast.success(res.message);
+          window.dispatchEvent(new Event("cart-updated"));
+          router.push("/");
         }else{
           toast.error(res.error);
         }
@@ -52,50 +56,58 @@ export default function AddressForm(){
     }
     return(
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 w-full lg:w-1/2 lg:pb-20" action="">
-          <div className="flex gap-3">
+          <div className="flex gap-3 w-full">
               <Controller
               control={form.control}
               name="receiver_first_name"
               render={({field,fieldState}) => (
+                <div className="w-1/2">
                 <Input error={fieldState.error?.message} field={field} id="receiver_first_name" name="receiver_first_name" placeholder="First Name" required={true} type="text"/>
+                </div>
               )}
               />
             <Controller
             control={form.control}
             name="receiver_last_name"
             render={({field,fieldState}) => (
+              <div className="w-1/2">
               <Input error={fieldState.error?.message} field={field} id="receiver_last_name" name="receiver_last_name" placeholder="Last Name" required={true} type="text"/>
+              </div>
             )}
             />
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 w-full">
                 <Controller
                 control={form.control}
                 name="receiver_phone_number"
                 render={({field,fieldState}) => (
+                  <div className="w-1/2">
                   <Input error={fieldState.error?.message} field={field} id="receiver_phone_number" name="receiver_phone_number" placeholder="Phone Number" required={true} type="text"/>
+                  </div>
                 )}
                 />
                 <Controller
                 control={form.control}
                 name="receiver_secondary_phone_number"
                 render={({field,fieldState}) => (
+                  <div className="w-1/2">
                   <Input error={fieldState.error?.message} field={field} id="phonenumber2" name="phonenumber2" placeholder="Phone Number" required={true} type="text"/>
+                  </div>
                 )}
                 />
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 w-full">
                 <Controller
                 control={form.control}
                 name="receiver_gender"
                 render={({field,fieldState}) => (
-                  <div>
-                    <select {...field} id="receiver_gender" name="receiver_gender">
+                  <div className="w-1/2 relative">
+                    <select {...field} id="receiver_gender" name="receiver_gender" className={`border-2 ${fieldState.error?.message ? 'border-red-500' : 'border-mid'} h-12 w-full p-2 bg-transparent outline-none cursor-pointer`}>
                       <option value="">Gender</option>
                       <option value="1">Male</option>
                       <option value="2">Female</option>
                     </select>
-                    {fieldState.error?.message && <p className="text-error">{fieldState.error.message}</p>}
+                    {fieldState.error?.message && <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>}
                   </div>
                 )}
                 />
@@ -103,31 +115,35 @@ export default function AddressForm(){
                 control={form.control}
                 name="receiver_area"
                 render={({field,fieldState}) => (
-                  <div>
-                    <select {...field} id="receiver_area" name="receiver_area">
+                  <div className="w-1/2  relative">
+                    <select {...field} id="receiver_area" name="receiver_area" className={`border-2 ${fieldState.error?.message ? 'border-red-500' : 'border-mid'} h-12 w-full p-2 bg-transparent outline-none cursor-pointer`}>
                       <option value="">Area</option>
                       {areas.map((area) => (
                           <option key={area.id} value={area.name}>{area.name}</option>
                       ))}
                   </select>
-                  {fieldState.error?.message && <p className="text-error">{fieldState.error.message}</p>}
+                  {fieldState.error?.message && <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>}
                   </div>
                 )}
                 />
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 w-full">
                 <Controller
                 control={form.control}
                 name="receiver_building"
                 render={({field,fieldState}) => (
+                  <div className="w-1/2">
                   <Input error={fieldState.error?.message} field={field} id="receiver_building" name="receiver_building" placeholder="Building" required={true} type="text"/>
+                  </div>
                 )}
                 />
                 <Controller
                 control={form.control}
                 name="receiver_floor"
                 render={({field,fieldState}) => (
+                  <div className="w-1/2">
                   <Input error={fieldState.error?.message} field={field} id="receiver_floor" name="receiver_floor" placeholder="Floor" required={true} type="text"/>
+                  </div>
                 )}
                 />
               </div>
@@ -135,14 +151,18 @@ export default function AddressForm(){
                 control={form.control}
                 name="receiver_email"
                 render={({field,fieldState}) => (
+                  <div className="w-full">
                   <Input error={fieldState.error?.message} field={field} id="receiver_email" name="receiver_email" placeholder="Email" required={false} type="email"/>
+                  </div>
                 )}
                 />
                 <Controller
                 control={form.control}
                 name="receiver_directions"
                 render={({field,fieldState}) => (
+                  <div className="w-full">
                   <Input error={fieldState.error?.message} field={field} id="receiver_directions" name="receiver_directions" placeholder="Address Details" required={true} type="text"/>
+                  </div>
 
                 )}
                 />

@@ -161,6 +161,7 @@ export default function EditProductVariants() {
                                                 key={variant.id} 
                                                 variant={variant} 
                                                 isPending={isPending}
+                                                id={product.id}
                                                 handleUpdateQuantity={handleUpdateQuantity} 
                                             />
                                         ))}

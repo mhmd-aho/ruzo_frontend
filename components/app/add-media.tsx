@@ -92,7 +92,7 @@ export default function AddMedia({ product }: { product: ProductSchema }) {
                             multiple={true}
                             sourceList="local,url,camera"
                             className="uc-light uc-custom"
-                            imageShrink="1600x1600 60%"
+                            imageShrink="1600x1600 40%"
                         />
                     </div>
                 </div>

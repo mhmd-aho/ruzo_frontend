@@ -44,8 +44,8 @@ export default function CollectionButton() {
                 <div  className="lg:absolute lg:top-20 lg:left-0 lg:bg-black/20 lg:backdrop-blur-sm w-full lg:h-screen h-fit">
                     <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="flex flex-col items-start justify-start gap-6 bg-white w-full h-72 lg:p-9 p-3 overflow-auto">
                         <h3 className="lg:text-xl text-sm text-primary font-bold max-lg:hidden">Shop by Category</h3>
-                        <div className="flex flex-wrap max-lg:flex-col justify-start max-lg:items-start gap-8 items-center">
-                            <Link onClick={() => setIsHovered(false)} className="text-mid text-sm lg:text-xl " href='/collections'>All Collections</Link>
+                        <div className="flex flex-wrap max-lg:flex-col justify-start max-lg:items-start lg:gap-8 gap-4 items-center">
+                            <Link onClick={() => setIsHovered(false)} className="text-mid text-sm lg:text-xl " href='/collections'>All</Link>
                             {categories.map((category) => (
                                 <Link key={category.id} onClick={() => setIsHovered(false)} className="text-mid text-sm lg:text-xl " href={`/collections/?category=${category.name}`}>{category.name}</Link>
                             ))}

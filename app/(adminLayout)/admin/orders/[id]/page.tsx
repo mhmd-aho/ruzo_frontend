@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import DeleteOrderModal from "@/components/app/delete-order-modal";
+import PrintBarcodeButton from "@/components/app/print-barcode-button";
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -73,6 +74,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                         >
                             Back
                         </Link>
+                        <PrintBarcodeButton order={order} />
                         <DeleteOrderModal orderId={id} token={token.value} />
                     </div>
                 </div>

@@ -1,13 +1,8 @@
-import { getVariantImage} from "@/app/action";
 import { ProductSchema } from "@/lib/schemas";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 export default function SearchResult({item}: {item: ProductSchema}){
-    const [media,setMedia] = useState<string>("")
-    useEffect(() => {
-       getVariantImage(item.id).then((media) => setMedia(media));
-    },[item.id])
+    const media = item.default_img.media_url
     return (
         <Link href={`/collections/product/${item.id}`} key={item.id} className="flex gap-2 h-32">
             <div className="h-full w-28 relative">

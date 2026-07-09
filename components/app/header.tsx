@@ -20,7 +20,7 @@ export default function Header() {
                 <Link href="/">Home</Link>
                 <CollectionButton/>
                 <Link href="/contactus">Contact Us</Link>
-                <Link href="/ourstory">Our Story</Link>
+                <Link href="/ourstory " className="hidden">Our Story</Link>
             </nav>
             <div className="hidden lg:block w-2/5">
                 <SearchBar/>

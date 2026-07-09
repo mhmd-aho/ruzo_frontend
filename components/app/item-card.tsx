@@ -1,9 +1,8 @@
 "use client";
-
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ProductSchema, ProductVariantsSchema,ColorSchema } from "@/lib/schemas";
+import { getOptimizedImageUrl } from "@/lib/utils";
 type Props = {
     product: ProductSchema
     admin:boolean
@@ -28,15 +27,22 @@ export default function ItemCard({product,admin}: Props) {
                         {isLoading && (
                             <div className="absolute inset-0 bg-gray-200 animate-pulse z-10" />
                         )}
-                        <Image
-                            unoptimized
-                            fill
-                            sizes="(max-width: 1024px) 170px, 392px"
-                            src={media.media_url}
+                        <img
+                            src={getOptimizedImageUrl(
+                                media.media_url, 
+                                600, 
+                                800, 
+                                product.category.name.toLowerCase() === "pants" ? "scale_crop" : "preview",
+                                product.category.name.toLowerCase() === "pants" ? "top" : ""
+                            )}
                             alt={product.name}
-                            className={`object-cover object-bottom transition-all duration-500 ${
+                            className={`w-full h-full object-cover ${
+                                product.category.name.toLowerCase() === "pants" ? "object-top" : "object-bottom"
+                            } transition-all duration-500 ${
                                 isLoading ? "blur-md scale-105" : "blur-0 scale-100"
                             }`}
+                            loading="lazy"
+                            decoding="async"
                             onLoad={() => setIsLoading(false)}
                         />
                     </>

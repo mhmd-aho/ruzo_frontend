@@ -5,24 +5,48 @@ import CartItems from "./cart-items";
 import { CartItemSchema } from "@/lib/schemas";
 import { getCartItems } from "@/app/action";
 import Link from "next/link";
+import { toast } from "sonner";
+
 export default function Cart() {
     const [cartOpen, setCartOpen] = useState(false);
     const [cartItems, setCartItems] = useState<CartItemSchema[]>([]);
-    useEffect(()=>{
-        const getCart = async () =>{            
-            const result = await getCartItems();
-            if(!result.success){
-                alert(result.error);
-                return;
-            }
-            setCartItems(result.data);
+
+    const getCart = async () => {            
+        const result = await getCartItems();
+        if(!result.success){
+            toast.error(result.error || "Failed to load cart");
+            return;
         }
+        setCartItems(result.data || []);
+    }
+
+    useEffect(() => {
         getCart();
-    },[]);
+
+        const handleCartUpdate = () => {
+            getCart();
+        };
+
+        window.addEventListener("cart-updated", handleCartUpdate);
+        return () => {
+            window.removeEventListener("cart-updated", handleCartUpdate);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (cartOpen) {
+            getCart();
+        }
+    }, [cartOpen]);
     return(
         <div className="size-6">
-            <button className="w-full h-full cursor-pointer" onClick={() => setCartOpen(!cartOpen)}>
+            <button className="w-full h-full cursor-pointer relative" onClick={() => setCartOpen(!cartOpen)}>
                 <CartIcon/>
+                {cartItems.length > 0 && (
+                    <div className="absolute top-0 right-0 bg-primary rounded-full size-3 flex items-center justify-center text-white text-[10px]">
+                        <p>{cartItems.length}</p>
+                    </div>
+                )}
             </button>
             {
                 cartOpen && (
