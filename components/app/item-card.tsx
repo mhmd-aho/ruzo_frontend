@@ -16,12 +16,13 @@ export default function ItemCard({product,admin}: Props) {
         ).values()
     )
     const media = product.default_img;
+    const isPants = product.category.name.toLowerCase().includes("pant") || product.category.name.toLowerCase().includes("trouser");
     return (
         <Link 
             href={`${admin ? `/admin/products/edit/${product.id}` : `/collections/product/${product.id}`} `} 
-            className="lg:h-[540px] h-[280px] lg:w-[392px] w-[170px] flex flex-col items-start gap-3"
+            className="lg:h-[540px] h-[280px] lg:w-[392px] sm:h-[400px] sm:w-[250px] max-sm:w-[170px] flex flex-col items-start gap-3"
         >
-<div className="lg:h-[438px] h-[220px] w-full overflow-hidden relative bg-gray-100">
+<div className="lg:h-[438px] sm:h-[340px] h-[150px] w-full overflow-hidden relative bg-gray-100">
                 {media?.media_url ? (
                     <>
                         {isLoading && (
@@ -29,15 +30,10 @@ export default function ItemCard({product,admin}: Props) {
                         )}
                         <img
                             src={getOptimizedImageUrl(
-                                media.media_url, 
-                                600, 
-                                800, 
-                                product.category.name.toLowerCase() === "pants" ? "scale_crop" : "preview",
-                                product.category.name.toLowerCase() === "pants" ? "top" : ""
-                            )}
+                                media.media_url,)}
                             alt={product.name}
                             className={`w-full h-full object-cover ${
-                                product.category.name.toLowerCase() === "pants" ? "object-top" : "object-bottom"
+                                isPants ? "object-[50%_150%] scale-125" : "object-top"
                             } transition-all duration-500 ${
                                 isLoading ? "blur-md scale-105" : "blur-0 scale-100"
                             }`}

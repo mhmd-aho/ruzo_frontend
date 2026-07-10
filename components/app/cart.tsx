@@ -39,8 +39,8 @@ export default function Cart() {
         }
     }, [cartOpen]);
     return(
-        <div className="size-6">
-            <button className="w-full h-full cursor-pointer relative" onClick={() => setCartOpen(!cartOpen)}>
+        <div className="w-14 flex justify-end">
+            <button className="size-6 cursor-pointer relative" onClick={() => setCartOpen(!cartOpen)}>
                 <CartIcon/>
                 {cartItems.length > 0 && (
                     <div className="absolute top-0 right-0 bg-primary rounded-full size-3 flex items-center justify-center text-white text-[10px]">

@@ -8,8 +8,12 @@ import { ProductSchema } from "@/lib/schemas";
 const AUTOPLAY_DELAY = 3000;
 const RESUME_DELAY = 6000;
 
-export default function BestSeller() {
-    const [bestSellers, setBestSellers] = useState<ProductSchema[]>([]);
+export interface BestSellerProps {
+    initialProducts?: ProductSchema[];
+}
+
+export default function BestSeller({ initialProducts = [] }: BestSellerProps) {
+    const [bestSellers, setBestSellers] = useState<ProductSchema[]>(initialProducts);
     const [activeIndex, setActiveIndex] = useState(0);
 
     const cardRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -130,8 +134,8 @@ export default function BestSeller() {
     }, [bestSellers]);
 
     return (
-        <div className="relative w-full flex flex-col items-center gap-6 overflow-hidden">
-            <ul className="relative w-full lg:h-[540px] h-[340px] list-none p-0 m-0 [perspective:1200px] [transform-style:preserve-3d]">
+        <div className="relative w-full flex flex-col items-center lg:gap-6 gap-3 overflow-hidden">
+            <ul className="relative w-full lg:h-[540px] h-[280px] list-none p-0 m-0 [perspective:1200px] [transform-style:preserve-3d]">
                 {bestSellers.length > 0 ? (
                     bestSellers.map((item, i) => (
                         <li
@@ -157,7 +161,7 @@ export default function BestSeller() {
                             onClick={() => handleDotClick(i)}
                             aria-label={`Go to slide ${i + 1}`}
                             className={`h-2.5 rounded-full transition-all duration-300 ${
-                                i === activeIndex ? "bg-black w-6" : "bg-gray-300 w-2.5"
+                                i === activeIndex ? "bg-primary w-6" : "bg-gray-300 w-2.5"
                             }`}
                         />
                     ))}

@@ -189,7 +189,9 @@ export const getCategories = async () => {
     try {
         const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}products/categories/`;
     
-        const res = await fetch(url, { cache: "no-store" });
+        const res = await fetch(url, {
+            ...withCacheTags(CACHE_TAGS.categories),
+        });
         if (!res.ok) {
             const contentType = res.headers.get("content-type");
             let errorMsg = "Failed to get categories";
@@ -209,7 +211,9 @@ export const getColors = async () => {
     try {
         const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}products/colors/`;
 
-        const res = await fetch(url, { cache: "no-store" });
+        const res = await fetch(url, {
+            ...withCacheTags(CACHE_TAGS.colors),
+        });
         if (!res.ok) {
             const contentType = res.headers.get("content-type");
             let errorMsg = "Failed to get colors";
@@ -228,7 +232,9 @@ export const getColors = async () => {
 export const getSizes = async () => {
     try {
         const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}products/sizes/`;
-        const res = await fetch(url, { cache: "no-store" });
+        const res = await fetch(url, {
+            ...withCacheTags(CACHE_TAGS.sizes),
+        });
         if (!res.ok) {
             const contentType = res.headers.get("content-type");
             let errorMsg = "Failed to get sizes";

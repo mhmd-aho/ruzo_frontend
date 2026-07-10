@@ -8,7 +8,7 @@ export default function Footer() {
                 <div className="flex flex-col gap-4 w-52">
                     <h2 className="text-2xl font-boldonse">RÜZO</h2>
                     <p className="text-muted text-sm ">Fashion with intention. Confidence with purpose. Worn by women who define their own style.</p>
-                    <a href="https://www.instagram.com/ruzoBeirut/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity w-fit mt-1">
+                    <a href="https://www.instagram.com/ruzobeirut?igsh=MWFvazNxYWJsbnhrdA==" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity w-fit mt-1">
                         <Instagram fill="white" />
                     </a>
                 </div>

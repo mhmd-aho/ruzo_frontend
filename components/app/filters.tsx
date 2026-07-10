@@ -1,15 +1,28 @@
 "use client";
 import Filter from "../svg/filter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Exit } from "../svg/exit";
 import FilterDisplay from "../input/filter";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { getCategories } from "@/app/action";
+import { CategorySchema } from "@/lib/schemas";
 
 export default function Filters() {
     const [showFilters, setShowFilters] = useState(false);
+    const [categories, setCategories] = useState<CategorySchema[]>([]);
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const res = await getCategories();
+            if (res.success && res.data) {
+                setCategories(res.data);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const handleFilter = (filterName: string, option: string) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -129,7 +142,10 @@ export default function Filters() {
                     onSelect={handleFilter} 
                     selectedValue={searchParams.get("category")} 
                     filterName={{key: "category", value: "Category"}} 
-                    options={[{key: "in_stock", value: "In stock"}, {key: "jeans", value: "Jeans"}, {key: "sets", value: "Sets"}, {key: "skirts", value: "Skirts"}]}
+                    options={categories.map((cat) => ({
+                        key: cat.name,
+                        value: cat.name
+                    }))}
                 />
             </div>
         </div>
