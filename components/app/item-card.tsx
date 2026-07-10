@@ -33,7 +33,7 @@ export default function ItemCard({product,admin}: Props) {
                                 media.media_url,)}
                             alt={product.name}
                             className={`w-full h-full object-cover ${
-                                isPants ? "object-[50%_150%] scale-125" : "object-top"
+                                isPants ? "object-[50%_100%] scale-125" : "object-top"
                             } transition-all duration-500 ${
                                 isLoading ? "blur-md scale-105" : "blur-0 scale-100"
                             }`}
