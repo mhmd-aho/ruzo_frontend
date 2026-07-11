@@ -2,20 +2,22 @@
 import { Exit } from "../svg/exit";
 import Plus from "../svg/plus"
 import { useState } from "react";
-import { createCategory, createSize } from "@/app/action";
+import { createCategory, createSize, createColor } from "@/app/action";
 import { toast } from "sonner";
 interface Props {
-    type: "Category" | "Size";
+    type: "Category" | "Size" | "Color";
 }
 export default function AddPopup({type}:Props) {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
+    const [color, setColor] = useState("#000000");
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const res = type === "Category" ? await createCategory(name) : await createSize(name);
+        const res = type === "Category" ? await createCategory(name) : type === "Size" ? await createSize(name) : await createColor({name, color_code: color});
         if (res.success) {
             setOpen(false);
             setName("");
+            setColor("#000000");
             toast.success(`${type} created successfully!`);
         } else {
             toast.error(res.error || `Failed to create ${type}`);
@@ -32,6 +34,9 @@ export default function AddPopup({type}:Props) {
                         <h1 className="text-xl font-boldonse">Add {type}</h1>
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                             <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={`${type} Name`} className="border border-gray-300 rounded-md p-2" />
+                            {
+                                type === "Color" && <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="border border-gray-300 rounded-md p-2" />
+                            }
                             <button type="submit" className="bg-primary text-white rounded-md p-2">Add {type}</button>
                         </form>
                     </div>

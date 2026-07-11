@@ -100,11 +100,6 @@ export default async function Product({
                     {product && <AddToCartForm sizes={sizes} colors={colors} product={product} quantity={selectedVariant?.[0]?.quantity || 0} />}
                 </div>
             </section>
-            <section className="lg:h-[calc(100vh-80px)] w-full lg:px-10 px-5 pt-8 pb-12">
-                <div className="flex flex-col gap-8">
-                    <h2 className="text-2xl lg:text-4xl font-boldonse">You May Also Like</h2>
-                </div>
-            </section>
         </>
     )
 }

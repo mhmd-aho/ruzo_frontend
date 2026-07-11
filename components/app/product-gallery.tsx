@@ -29,7 +29,7 @@ export default function ProductGallery({ images, alt }: Props) {
     }
 
     return (
-        <div className="flex flex-col lg:flex-row relative w-full h-fit lg:w-fit gap-4">
+        <div className="flex flex-col lg:flex-row relative w-full h-fit lg:w-fit lg:gap-4 gap-2">
             {/* Desktop Side Thumbnails */}
             <div className="flex-col gap-3 hidden lg:flex shrink-0">
                 {images.length > 0 ? (

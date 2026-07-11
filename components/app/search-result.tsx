@@ -1,6 +1,7 @@
 import { ProductSchema } from "@/lib/schemas";
 import Image from "next/image";
 import Link from "next/link";
+import { getOptimizedImageUrl } from "@/lib/utils";
 export default function SearchResult({item}: {item: ProductSchema}){
     const media = item.default_img.media_url
     return (
@@ -9,7 +10,7 @@ export default function SearchResult({item}: {item: ProductSchema}){
                 {media ? (
                     <Image
                     fill
-                    src={media}
+                    src={getOptimizedImageUrl(media, 224, 256, "scale_crop", "center")}
                     alt={item.name}
                     className="object-center object-cover"
             />

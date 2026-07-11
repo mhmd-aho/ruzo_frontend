@@ -24,7 +24,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="h-fit w-full relative">
+    <main className="h-fit w-full relative  flex flex-col gap-10">
       <section className="flex justify-start  lg:h-[calc(100vh-80px)] h-[calc(100vh-48px)] w-full relative pl-10">
         <div className="h-full w-full absolute top-0 left-0 ">
           <video src="/hero.mp4" autoPlay loop muted playsInline className="h-full w-full object-cover object-top"/>

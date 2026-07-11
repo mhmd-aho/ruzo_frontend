@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getOptimizedImageUrl } from "@/lib/utils";
 
 export default async function HomePageCollection({ name }: { name: string }) {
   const collections: { 
@@ -46,7 +47,7 @@ export default async function HomePageCollection({ name }: { name: string }) {
       */}
       <div className="absolute inset-0 w-full h-full">
         <img 
-          src={image} 
+          src={getOptimizedImageUrl(image, 800, 1000, "preview")} 
           alt={btnName} 
           className={imgClass}
         /> 

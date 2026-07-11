@@ -18,11 +18,14 @@ export default async function AdminProducts(){
     return (
         <div className="flex flex-col justify-center items-center ">
             <div className="flex flex-col gap-4 w-full p-4">
-            <h1 className="lg:text-2xl text-lg font-boldonse">Products</h1>
+            <div className="flex justify-between items-center">
+                <h1 className="lg:text-2xl text-lg font-boldonse">Products</h1>
+                <Link className="px-4 py-2 bg-primary text-white rounded-md flex items-center lg:gap-2 gap-1 max-lg:text-xs" href="/admin/products/add"><Plus fill="white"/>New Product</Link>
+            </div>
             <div className="flex justify-between">
-                <Link className="lg:px-4 lg:py-2 py-1 px-2 bg-primary text-white rounded-md flex items-center lg:gap-2 gap-1 max-lg:text-xs" href="/admin/products/add"><Plus fill="white"/>New Product</Link>
                 <AddPopup type="Category"/>
                 <AddPopup type="Size"/>
+                <AddPopup type="Color"/>
             </div>
             </div>
             <div className="flex justify-between items-center flex-wrap lg:p-10 p-4">

@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { ColorSchema, ProductSchema, SizeSchema } from "@/lib/schemas";
 import Minus from "../svg/minus";
 import Plus from "../svg/plus";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { addToCart } from "@/app/action";
 import{ toast } from "sonner";
+
 
 export default function AddToCartForm({
     colors,
@@ -20,6 +21,7 @@ export default function AddToCartForm({
 }) {
     const router = useRouter();
     const pathname = usePathname();
+    const [isPending,startTransition] = useTransition();
     const searchParams = useSearchParams();
     const selectedColor = searchParams.get('color') || product?.default_img?.color?.name;
     const selectedSize = searchParams.get('size');
@@ -46,18 +48,32 @@ export default function AddToCartForm({
         sizes.some((s: SizeSchema) => s.name.toLowerCase() === size.toLowerCase())
 )
     const handleAddToCart = async () => {
-        if (!selectedColor || !selectedSize || userQuantity === 0) {
-            setError(true);
-            return;
-        }
-        const result = await addToCart(product.id, selectedColor, selectedSize, userQuantity);
+        startTransition(async () => {
+            if (!selectedColor || !selectedSize || userQuantity === 0) {
+                setError(true);
+                return;
+            }
+            
+            const activeColor = selectedColor || product?.default_img?.color?.name;
+            const selectedVariantObj = product.variants.find(
+                (v) => v.color.name.toLowerCase() === activeColor?.toLowerCase() &&
+                       v.size.name.toLowerCase() === selectedSize?.toLowerCase()
+            );
+
+            if (!selectedVariantObj) {
+                toast.error("Selected variant is not available.");
+                return;
+            }
+
+            const result = await addToCart(selectedVariantObj.id, userQuantity);
         
-        if (result?.success) {
-            toast.success(result.message);
-            window.dispatchEvent(new Event("cart-updated"));
-        } else {
-            toast.error(result?.error || "Something went wrong");
-        }
+            if (result?.success) {
+                toast.success(result.message);
+                window.dispatchEvent(new Event("cart-updated"));
+            } else {
+                toast.error(result?.error || "Something went wrong");
+            }
+        });
     }
     return (
         <div className="lg:w-1/2 w-full flex flex-col lg:gap-9 gap-3">
@@ -120,7 +136,7 @@ export default function AddToCartForm({
                 }
             </div>
             
-            <button onClick={handleAddToCart} className="bg-primary text-white w-full lg:h-14 h-12">Add to cart</button>
+            <button onClick={handleAddToCart} disabled={isPending} className={`bg-primary text-white w-full lg:h-14 h-12 ${isPending ? 'opacity-70 cursor-not-allowed' : ''}`}>{isPending ? 'Adding to cart...' : 'Add to cart'}</button>
             <div className="flex flex-col gap-3">
                 <p className="font-bold text-black">Description:</p>
                 <p className="text-mid">{product?.description}</p>

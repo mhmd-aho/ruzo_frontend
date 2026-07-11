@@ -2,6 +2,7 @@ import { ProductSchema } from "@/lib/schemas";
 import Link from "next/link";
 import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 import BackArrow from "@/components/svg/back-arrow";
+import { getOptimizedImageUrl } from "@/lib/utils";
 export default async function EditProduct({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     let product: ProductSchema | null = null;
@@ -34,7 +35,7 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
                     <div className="md:flex">
                         <div className="md:w-1/3 bg-neutral-50 relative min-h-[250px] md:min-h-full border-b md:border-b-0 md:border-r border-muted">
                             {img ? (
-                                <img className="w-full h-full object-cover absolute inset-0" src={img} alt={product.name} />
+                                <img className="w-full h-full object-cover absolute inset-0" src={getOptimizedImageUrl(img, 600, 800, "preview")} alt={product.name} />
                             ) : (
                                 <div className="absolute inset-0 flex items-center justify-center bg-neutral-100 text-mid text-xs uppercase tracking-widest font-semibold">
                                     No Image Available

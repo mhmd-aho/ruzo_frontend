@@ -18,17 +18,11 @@ const getVariant = async (id: number, selectedColor: string, selectedSize: strin
 }
 
 // handle submit 
-export const addToCart = async (id: number, selectedColor: string, selectedSize: string, quantity: number) => {
-    if (!selectedColor || !selectedSize) {
-        return { success: false, error: "Missing color or size selection" };
+export const addToCart = async (variantId: number, quantity: number) => {
+    if (!variantId) {
+        return { success: false, error: "Missing variant selection" };
     }
     
-    const variantList = await getVariant(id, selectedColor, selectedSize);
-    if (!variantList || variantList.length <= 0) {
-        return { success: false, error: "Variant not found" };
-    }
-    
-    const variant = variantList[0];
     const cookieStore = await cookies();
     const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
     
@@ -39,7 +33,7 @@ export const addToCart = async (id: number, selectedColor: string, selectedSize:
             "Cookie": cookieHeader,
         },
         body: JSON.stringify({
-            variant_id: variant?.id,
+            variant_id: variantId,
             quantity: quantity,
         })
     });
@@ -71,10 +65,10 @@ export const addToCart = async (id: number, selectedColor: string, selectedSize:
         return { success: false, error: data.error || "Failed to add item to cart" };
     }
 
-    revalidateCartCache();
-    revalidateProductCaches(id);
-
-    return { success: true, message: data.message || "Item added to cart" };
+    return { 
+        success: true, 
+        message: data.message || "Item added to cart"
+    };
 }
 
 export const getCartItems = async () =>{
@@ -87,7 +81,7 @@ export const getCartItems = async () =>{
             "Content-Type": "application/json",
             "Cookie": cookieHeader,
         },
-        ...withCacheTags(CACHE_TAGS.cart),
+        cache: "no-store",
     });
     const data = await res.json();
     if(!res.ok){
@@ -128,8 +122,11 @@ export const deleteItemFromCart = async (id: number) => {
             // ignore
         }
     }
-    revalidateCartCache();
-    return { success: true, message };
+
+    return { 
+        success: true, 
+        message
+    };
 }
 export const updateCartItemQuantity = async (id: number, action: 'increase' | 'decrease') => {
     
@@ -147,8 +144,11 @@ export const updateCartItemQuantity = async (id: number, action: 'increase' | 'd
     if(!res.ok){
         return {success:false,error:data.error || "Failed to update item from cart"};
     }
-    revalidateCartCache();
-    return {success:true,message:data.message || "Item updated from cart"};
+
+    return {
+        success: true,
+        message: data.message || "Item updated from cart"
+    };
 }
 
 // get wakilni areas
@@ -607,5 +607,29 @@ export const createSize = async (name: string) => {
         return {success:true,data:result};
     } catch {
         return {success:false,error:"Failed to create category due to network error."};
+    }
+}
+export const createColor = async ({name, color_code}: {name: string, color_code: string}) => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if(!token){
+        return {success:false,error:"Admin token not found"};
+    }
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}products/colors/create/`, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Token ${token}`,
+            },
+            body: JSON.stringify({ name,color_code  }),
+        });
+        const result = await res.json();
+        if(!res.ok){
+            return {success:false,error:result.error || "Failed to create color"};
+        }
+        return {success:true,data:result};
+    } catch {
+        return {success:false,error:"Failed to create color due to network error."};
     }
 }

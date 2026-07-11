@@ -135,7 +135,7 @@ export default function BestSeller({ initialProducts = [] }: BestSellerProps) {
 
     return (
         <div className="relative w-full flex flex-col items-center lg:gap-6 gap-3 overflow-hidden">
-            <ul className="relative w-full lg:h-[540px] h-[280px] list-none p-0 m-0 [perspective:1200px] [transform-style:preserve-3d]">
+            <ul className="relative w-full lg:h-[540px] h-[200px] list-none p-0 m-0 [perspective:1200px] [transform-style:preserve-3d]">
                 {bestSellers.length > 0 ? (
                     bestSellers.map((item, i) => (
                         <li

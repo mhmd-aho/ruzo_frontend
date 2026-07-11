@@ -1,6 +1,7 @@
 import QuantityCart from "../input/quantity-cart";
 import { ProductVariantsSchema } from "@/lib/schemas";
 import Image from "next/image";
+import { getOptimizedImageUrl } from "@/lib/utils";
 
 export default async function CheckoutItems({ id, productVariant, quantity }: { id: number, productVariant: ProductVariantsSchema, quantity: number }) {
     const media = productVariant.product.default_img.media_url
@@ -13,7 +14,7 @@ export default async function CheckoutItems({ id, productVariant, quantity }: { 
                 <div className="relative h-24 w-20 lg:h-full lg:w-28 shrink-0 overflow-hidden rounded bg-neutral-50">
                     <Image 
                         fill
-                        src={media} 
+                        src={getOptimizedImageUrl(media, 224, 256, "scale_crop", "center")} 
                         alt={productVariant.product.name} 
                         className="object-cover"
                     />

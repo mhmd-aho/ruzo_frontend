@@ -30,7 +30,13 @@ export default function SearchBar() {
         }, 300)
         return () => clearTimeout(debounce);
     }, [searchInput])
-
+    useEffect(() => {
+        if (isMobileOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+    }, [isMobileOpen])
     const handleCloseMobile = () => {
         setIsMobileOpen(false);
         setSearchInput("");

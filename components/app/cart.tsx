@@ -23,13 +23,18 @@ export default function Cart() {
     useEffect(() => {
         getCart();
 
-        const handleCartUpdate = () => {
-            getCart();
+        const handleCartUpdate = (e: Event) => {
+            const customEvent = e as CustomEvent<{ data: CartItemSchema[] }>;
+            if (customEvent.detail && customEvent.detail.data) {
+                setCartItems(customEvent.detail.data);
+            } else {
+                getCart();
+            }
         };
 
-        window.addEventListener("cart-updated", handleCartUpdate);
+        window.addEventListener("cart-updated", handleCartUpdate as EventListener);
         return () => {
-            window.removeEventListener("cart-updated", handleCartUpdate);
+            window.removeEventListener("cart-updated", handleCartUpdate as EventListener);
         };
     }, []);
 

@@ -17,10 +17,17 @@ export default function ItemCard({product,admin}: Props) {
     )
     const media = product.default_img;
     const isPants = product.category.name.toLowerCase().includes("pant") || product.category.name.toLowerCase().includes("trouser");
+
+    const handleImageRef = (node: HTMLImageElement | null) => {
+        if (node && node.complete) {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <Link 
             href={`${admin ? `/admin/products/edit/${product.id}` : `/collections/product/${product.id}`} `} 
-            className="lg:h-[540px] h-[280px] lg:w-[392px] sm:h-[400px] sm:w-[250px] max-sm:w-[170px] flex flex-col items-start gap-3"
+            className="lg:h-[540px] h-[200px] lg:w-[392px] sm:h-[400px] sm:w-[250px] max-sm:w-[170px] flex flex-col items-start gap-3"
         >
 <div className="lg:h-[438px] sm:h-[340px] h-[150px] w-full overflow-hidden relative bg-gray-100">
                 {media?.media_url ? (
@@ -29,17 +36,19 @@ export default function ItemCard({product,admin}: Props) {
                             <div className="absolute inset-0 bg-gray-200 animate-pulse z-10" />
                         )}
                         <img
+                            ref={handleImageRef}
                             src={getOptimizedImageUrl(
                                 media.media_url,)}
                             alt={product.name}
                             className={`w-full h-full object-cover ${
-                                isPants ? "object-[50%_100%] scale-125" : "object-top"
+                                isPants ? "object-[50%_100%] scale-125" : "object-center"
                             } transition-all duration-500 ${
                                 isLoading ? "blur-md scale-105" : "blur-0 scale-100"
                             }`}
                             loading="lazy"
                             decoding="async"
                             onLoad={() => setIsLoading(false)}
+                            onError={() => setIsLoading(false)}
                         />
                     </>
                 ) : (
