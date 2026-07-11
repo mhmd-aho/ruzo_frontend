@@ -48,17 +48,8 @@ export default async function Collections({
     }
 
     const currentPage = parseInt(page || "1", 10);
-    let pageSize = 10;
-    if (totalCount > 0 && collections.length > 0) {
-        if (currentPage === 1) {
-            if (collections.length < totalCount) {
-                pageSize = collections.length;
-            }
-        } else {
-            pageSize = Math.round((totalCount - collections.length) / (currentPage - 1));
-        }
-    }
-    const totalPages = pageSize > 0 && totalCount > 0 ? Math.ceil(totalCount / pageSize) : 1;
+    const pageSize = 12;
+    const totalPages = totalCount > 0 ? Math.ceil(totalCount / pageSize) : 1;
 
     return (
         <main className="h-fit w-full flex flex-col lg:gap-12 gap-4">

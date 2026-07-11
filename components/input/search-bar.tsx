@@ -31,6 +31,7 @@ export default function SearchBar() {
         return () => clearTimeout(debounce);
     }, [searchInput])
     useEffect(() => {
+      
         if (isMobileOpen) {
             document.body.style.overflow = "hidden";
         } else {

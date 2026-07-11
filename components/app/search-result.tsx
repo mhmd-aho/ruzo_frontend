@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getOptimizedImageUrl } from "@/lib/utils";
 export default function SearchResult({item}: {item: ProductSchema}){
-    const media = item.default_img.media_url
+    const media = item.default_img?.media_url
     return (
         <Link href={`/collections/product/${item.id}`} key={item.id} className="flex gap-2 h-32">
             <div className="h-full w-28 relative">

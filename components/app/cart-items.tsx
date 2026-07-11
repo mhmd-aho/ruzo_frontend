@@ -25,7 +25,7 @@ export default function CartItems({id,productVariant,quantity}: {id:number,produ
                 }
             });
     }
-    const media = productVariant.product.default_img.media_url
+    const media = productVariant.product.default_img?.media_url
     return (
         <div className={`flex gap-2 h-32 w-full relative transition-all duration-300 ${isPending ? 'opacity-30 pointer-events-none' : ''}`}>
             <div className="h-full w-28 relative">

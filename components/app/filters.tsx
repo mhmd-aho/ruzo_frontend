@@ -25,14 +25,16 @@ export default function Filters() {
         category: searchParams.get("category"),
     });
 
-    useEffect(() => {
+    const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
+    if (searchParams !== prevSearchParams) {
+        setPrevSearchParams(searchParams);
         setSelectedFilters({
             sort: searchParams.get("sort"),
             size: searchParams.get("size"),
             color: searchParams.get("color"),
             category: searchParams.get("category"),
         });
-    }, [searchParams]);
+    }
 
     useEffect(() => {
         const fetchFilters = async () => {

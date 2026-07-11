@@ -21,7 +21,9 @@ export default function Cart() {
     }
 
     useEffect(() => {
-        getCart();
+        const timer = setTimeout(() => {
+            getCart();
+        }, 0);
 
         const handleCartUpdate = (e: Event) => {
             const customEvent = e as CustomEvent<{ data: CartItemSchema[] }>;
@@ -34,13 +36,17 @@ export default function Cart() {
 
         window.addEventListener("cart-updated", handleCartUpdate as EventListener);
         return () => {
+            clearTimeout(timer);
             window.removeEventListener("cart-updated", handleCartUpdate as EventListener);
         };
     }, []);
 
     useEffect(() => {
         if (cartOpen) {
-            getCart();
+            const timer = setTimeout(() => {
+                getCart();
+            }, 0);
+            return () => clearTimeout(timer);
         }
     }, [cartOpen]);
     return(

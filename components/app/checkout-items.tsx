@@ -4,7 +4,7 @@ import Image from "next/image";
 import { getOptimizedImageUrl } from "@/lib/utils";
 
 export default async function CheckoutItems({ id, productVariant, quantity }: { id: number, productVariant: ProductVariantsSchema, quantity: number }) {
-    const media = productVariant.product.default_img.media_url
+    const media = productVariant.product.default_img?.media_url
     
     return (
         <div className="w-full bg-white border-b border-neutral-100 p-4 lg:p-0 lg:h-32 lg:grid lg:grid-cols-6 flex flex-col md:flex-row md:justify-between items-center gap-4">

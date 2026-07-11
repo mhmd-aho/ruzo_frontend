@@ -60,11 +60,11 @@ export const addToCart = async (variantId: number, quantity: number) => {
 
     const data = await res.json();
 
-    // Return a plain object instead of the raw 'res' object
     if (!res.ok) {
         return { success: false, error: data.error || "Failed to add item to cart" };
     }
 
+    revalidateCartCache();
     return { 
         success: true, 
         message: data.message || "Item added to cart"
@@ -123,6 +123,7 @@ export const deleteItemFromCart = async (id: number) => {
         }
     }
 
+    revalidateCartCache();
     return { 
         success: true, 
         message
@@ -145,6 +146,7 @@ export const updateCartItemQuantity = async (id: number, action: 'increase' | 'd
         return {success:false,error:data.error || "Failed to update item from cart"};
     }
 
+    revalidateCartCache();
     return {
         success: true,
         message: data.message || "Item updated from cart"
@@ -280,6 +282,7 @@ export const adminLogin = async (data:z.infer<typeof AdminSignInSchema>) => {
         });
         
         const contentType = res.headers.get("content-type");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let result: any;
         if (contentType && contentType.includes("application/json")) {
             result = await res.json();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { getOptimizedImageUrl } from "@/lib/utils"
 
 type Props = {
@@ -10,11 +10,12 @@ type Props = {
 
 export default function ProductGallery({ images, alt }: Props) {
     const [selected, setSelected] = useState(0)
+    const [prevImages, setPrevImages] = useState(images)
 
-    // Reset fallback index if the variation image list swaps dynamically (e.g., changing colors)
-    useEffect(() => {
+    if (images !== prevImages) {
+        setPrevImages(images)
         setSelected(0)
-    }, [images])
+    }
 
     const activeImage = images[selected] ?? ""
 
