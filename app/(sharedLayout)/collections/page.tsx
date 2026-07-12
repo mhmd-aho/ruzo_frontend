@@ -60,6 +60,7 @@ export default async function Collections({
                     className="absolute top-0 left-0 w-full h-full object-center object-cover" 
                     decoding="async"
                     loading="eager"
+                    fetchPriority="high"
                 />
             </section>
             <section className="min-h-screen flex flex-col lg:flex-row items-center lg:items-start lg:px-28 gap-6 pb-10">
@@ -69,8 +70,8 @@ export default async function Collections({
                         {collections.length === 0 ? (
                             <p className="col-span-2 text-center text-mid py-12">No products found matching the criteria.</p>
                         ) : (
-                            collections.map((product) => (
-                                <ItemCard key={product.id} product={product} admin={false} />
+                            collections.map((product, index) => (
+                                <ItemCard key={product.id} product={product} admin={false} priority={index < 4} />
                             ))
                         )}
                     </div>

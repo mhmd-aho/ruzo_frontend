@@ -6,8 +6,9 @@ import { getOptimizedImageUrl } from "@/lib/utils";
 type Props = {
     product: ProductSchema
     admin:boolean
+    priority?: boolean
 }   
-export default function ItemCard({product,admin}: Props) {
+export default function ItemCard({product,admin,priority = false}: Props) {
     const [isLoading, setIsLoading] = useState(true);
     const variants:ProductVariantsSchema[] = product.variants;
     const colors = Array.from(
@@ -45,7 +46,8 @@ export default function ItemCard({product,admin}: Props) {
                             } transition-all duration-500 ${
                                 isLoading ? "blur-md scale-105" : "blur-0 scale-100"
                             }`}
-                            loading="lazy"
+                            loading={priority ? "eager" : "lazy"}
+                            fetchPriority={priority ? "high" : "auto"}
                             decoding="async"
                             onLoad={() => setIsLoading(false)}
                             onError={() => setIsLoading(false)}

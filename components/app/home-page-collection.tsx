@@ -50,6 +50,8 @@ export default async function HomePageCollection({ name }: { name: string }) {
           src={getOptimizedImageUrl(image, 800, 1000, "preview")} 
           alt={btnName} 
           className={imgClass}
+          decoding="async"
+          loading="lazy"
         /> 
       </div>
       <button className="bg-primary w-20 lg:w-36 h-8 lg:h-12 lg:text-xl rounded-lg lg:rounded-xl text-sm font-montserrat text-white z-20">

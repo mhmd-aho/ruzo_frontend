@@ -67,6 +67,7 @@ export default function ProductGallery({ images, alt }: Props) {
                         className="w-full h-full object-center object-cover select-none"
                         decoding="async"
                         loading="eager"
+                        fetchPriority="high"
                     />
                 ) : (
                     <div className="size-full bg-neutral-200 animate-pulse" />

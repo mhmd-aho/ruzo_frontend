@@ -143,7 +143,7 @@ export default function BestSeller({ initialProducts = [] }: BestSellerProps) {
                             ref={(el) => { cardRefs.current[i] = el; }}
                             className="absolute top-0 left-1/2 lg:w-[392px] w-[220px] custom-carousel-card"
                         >
-                            <ItemCard product={item} admin={false} />
+                            <ItemCard product={item} admin={false} priority={i === 0} />
                         </li>
                     ))
                 ) : (
