@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { getOptimizedImageUrl } from "@/lib/utils"
 
 type Props = {
@@ -11,6 +11,12 @@ type Props = {
 export default function ProductGallery({ images, alt }: Props) {
     const [selected, setSelected] = useState(0)
     const [prevImages, setPrevImages] = useState(images)
+
+    // Touch swipe gesture refs & state for mobile
+    const touchStartX = useRef<number | null>(null)
+    const touchEndX = useRef<number | null>(null)
+    const [swipeOffset, setSwipeOffset] = useState(0)
+    const [isSwiping, setIsSwiping] = useState(false)
 
     if (images !== prevImages) {
         setPrevImages(images)
@@ -27,6 +33,47 @@ export default function ProductGallery({ images, alt }: Props) {
     const handlePrev = () => {
         if (images.length <= 1) return
         setSelected((prev) => (prev - 1 + images.length) % images.length)
+    }
+
+    // Touch Event Handlers
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+        if (images.length <= 1) return
+        touchStartX.current = e.targetTouches[0].clientX
+        touchEndX.current = null
+        setIsSwiping(true)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+        if (images.length <= 1 || touchStartX.current === null) return
+        const currentX = e.targetTouches[0].clientX
+        touchEndX.current = currentX
+        const diff = currentX - touchStartX.current
+        // Limit visual drag resistance so it feels natural and smooth
+        setSwipeOffset(diff * 0.8)
+    }
+
+    const handleTouchEnd = () => {
+        setIsSwiping(false)
+        if (images.length <= 1 || touchStartX.current === null || touchEndX.current === null) {
+            setSwipeOffset(0)
+            return
+        }
+
+        const distance = touchStartX.current - touchEndX.current
+        const minSwipeDistance = 50 // Minimum distance in pixels to trigger slide
+
+        if (Math.abs(distance) > minSwipeDistance) {
+            if (distance > 0) {
+                // Swiped left -> show next image
+                handleNext()
+            } else {
+                // Swiped right -> show previous image
+                handlePrev()
+            }
+        }
+        setSwipeOffset(0)
+        touchStartX.current = null
+        touchEndX.current = null
     }
 
     return (
@@ -58,13 +105,23 @@ export default function ProductGallery({ images, alt }: Props) {
                 )}
             </div>
 
-            {/* Main Interactive Image Box */}
-            <div className="relative w-full h-[65vh] min-h-[450px] max-h-[600px] sm:max-w-md md:max-w-lg lg:w-[430px] lg:h-[550px] overflow-hidden bg-neutral-100 rounded-lg mx-auto lg:mx-0">
+            {/* Main Interactive Image Box with Touch Swipe Support */}
+            <div
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className="relative w-full h-[65vh] min-h-[450px] max-h-[600px] sm:max-w-md md:max-w-lg lg:w-[430px] lg:h-[550px] overflow-hidden bg-neutral-100 rounded-lg mx-auto lg:mx-0 touch-pan-y"
+            >
                 {activeImage ? (
                     <img
                         src={getOptimizedImageUrl(activeImage, 860, 1100, "preview")}
                         alt={alt}
-                        className="w-full h-full object-center object-cover select-none"
+                        style={{
+                            transform: `translateX(${swipeOffset}px)`,
+                        }}
+                        className={`w-full h-full object-center object-cover select-none ${
+                            !isSwiping ? "transition-transform duration-300 ease-out" : ""
+                        }`}
                         decoding="async"
                         loading="eager"
                         fetchPriority="high"
@@ -98,7 +155,7 @@ export default function ProductGallery({ images, alt }: Props) {
                             </svg>
                         </button>
                         
-                        {/* Page Counter Dots Indicator (Optional feature for mobile context) */}
+                        {/* Page Counter Dots Indicator */}
                         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/20 px-2 py-1 rounded-full lg:hidden backdrop-blur-xs">
                             {images.map((_, idx) => (
                                 <span 
