@@ -36,12 +36,12 @@ export default function AddToCartForm({
         router.push(`${pathname}?${params.toString()}`, {scroll: false});
     }
     const [error, setError] = useState<boolean>(false);
-    const [userQuantity, setUserQuantity] = useState<number>(0);
+    const [userQuantity, setUserQuantity] = useState<number>(1);
     const [prevSelectionKey, setPrevSelectionKey] = useState(`${selectedColor}-${selectedSize}`);
     const selectionKey = `${selectedColor}-${selectedSize}`;
     if (selectionKey !== prevSelectionKey) {
         setPrevSelectionKey(selectionKey);
-        setUserQuantity(0);
+        setUserQuantity(1);
     }
     const allSizes = ['xs', 's', 'm', 'l', 'xl'];
     const availableSizes = allSizes.filter((size: string) => 
@@ -128,7 +128,6 @@ export default function AddToCartForm({
                     <p>{userQuantity}</p>
                     <button disabled={userQuantity === quantity} type="button" onClick={() => setUserQuantity(userQuantity + 1)}><Plus fill='black' /></button>
                 </div>
-                {quantity > 0 && <p className="text-mid ml-1">Available: {quantity - userQuantity}</p>}
                 {
                     userQuantity === 0 && error && (
                         <p className="text-red-500 text-sm ml-1">Please select a quantity</p>

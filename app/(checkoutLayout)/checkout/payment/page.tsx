@@ -55,6 +55,14 @@ export default async function Payment() {
                     <p>Total</p>
                     <p>${subTotal }</p>
                 </div>
+                 <div className="flex justify-between w-full">
+                    <p>Shipping</p>
+                    <p>$4</p>
+                </div>
+                 <div className="flex justify-between w-full">
+                    <p>Total</p>
+                    <p>${subTotal + 4}</p>
+                </div>
                 <p className="text-sm text-mid">The total amount you pay includes all applicable customs duties & taxes. We guarantee no additional charges on delivery</p>
             </div>
            </div>

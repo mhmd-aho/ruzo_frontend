@@ -38,7 +38,7 @@ export default function ItemCard({product,admin}: Props) {
                         <img
                             ref={handleImageRef}
                             src={getOptimizedImageUrl(
-                                media.media_url,)}
+                                media.media_url, 400, 500, "scale_crop", "center")}
                             alt={product.name}
                             className={`w-full h-full object-cover ${
                                 isPants ? "object-[50%_100%] scale-125" : "object-center"

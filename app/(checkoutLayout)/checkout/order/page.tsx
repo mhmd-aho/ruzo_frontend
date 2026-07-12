@@ -54,8 +54,16 @@ export default async function Page(){
                     </div>
                     <div className="lg:w-1/2 w-full h-64 border-t-2 border-muted flex flex-col gap-5">
                         <div className="flex justify-between">
-                            <p>Total</p>
+                            <p>Subtotal</p>
                             <p>${cartTotal}</p>
+                        </div>
+                        <div className="flex justify-between">
+                            <p>Shipping</p>
+                            <p>$ 4</p>
+                        </div>
+                        <div className="flex justify-between">
+                            <p>Total</p>
+                            <p>${cartTotal + 4}</p>
                         </div>
                         <p className="font-bold text-sm">The total amount you pay includes all applicable customs duties & taxes. We guarantee no additional charges on delivery</p>
                         <Link href='/checkout/payment' className="w-1/3 h-12 bg-primary text-white ml-auto text-xl flex items-center justify-center">Next</Link>
