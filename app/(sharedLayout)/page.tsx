@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { getBestSellers } from "@/app/action";
 import HeroTitle from "@/components/app/hero-title";
+import Image from "next/image";
 export const metadata:Metadata = {
     title: "AURA | Home",
     description: "Welcome to AURA, where confidence becomes style. Discover our latest collections for women who move through the world on their own terms.",
@@ -26,7 +27,7 @@ export default async function Home() {
     <main className="h-fit w-full relative  flex flex-col gap-10">
       <section className="flex justify-start  lg:h-[calc(100vh-80px)] h-[calc(100vh-48px)] w-full relative pl-10">
         <div className="h-full w-full absolute top-0 left-0 ">
-          <img src="/hero-aura.png" alt="AURA Contemporary Apparel Collection" className="h-full w-full object-cover object-center"/>
+          <Image src="/hero-aura.png" alt="AURA Contemporary Apparel Collection" className="h-full w-full object-cover object-center"/>
         </div>
         <HeroTitle/>
       </section>

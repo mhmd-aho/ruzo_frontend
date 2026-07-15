@@ -4,6 +4,7 @@ import { ProductSchema } from "@/lib/schemas";
 import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 import { Metadata } from "next";
 import Pagination from "@/components/app/pagination";
+import Image from "next/image";
 
 export const metadata:Metadata = {
     title: "AURA | Collections",
@@ -53,7 +54,7 @@ export default async function Collections({
     return (
         <main className="h-fit w-full flex flex-col lg:gap-12 gap-4">
             <section className="h-[calc(100vh-48px)] lg:h-[calc(100vh-80px)] relative">
-                <img 
+                <Image 
                     src="/collections-hero.png" 
                     alt="AURA Collections Hero" 
                     className="absolute top-0 left-0 w-full h-full object-center object-cover" 
