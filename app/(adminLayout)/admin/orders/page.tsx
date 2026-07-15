@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { OrderSchema } from "@/lib/schemas";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getOrders } from "@/app/action";
 
 export default async function OrdersPage() {
     const cookieStore = await cookies();
@@ -12,14 +13,9 @@ export default async function OrdersPage() {
     
     let orders: OrderSchema[] = [];
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/`, {
-            headers: {
-                "Authorization": `Token ${token.value}`,
-            },
-            cache: "no-store",
-        });
-        if (response.ok) {
-            orders = await response.json();
+        const res = await getOrders();
+        if (res.success && res.data) {
+            orders = res.data;
         }
     } catch (error) {
         console.log(error);

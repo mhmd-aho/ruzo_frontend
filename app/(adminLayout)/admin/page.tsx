@@ -2,6 +2,8 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { OrderSchema } from "@/lib/schemas";
+import { getOrders } from "@/app/action";
+
 export default async function AdminPage(){
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token");
@@ -10,16 +12,20 @@ export default async function AdminPage(){
     }
     let orders: OrderSchema[] = [];
     try{
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/`, {
-            headers: {
-                "Authorization": `Token ${token.value}`,
-            },
-            cache: "no-store",
-        });
-        const data = await response.json();
-        orders = data;
+        const res = await getOrders();
+        if (res.success && Array.isArray(res.data)) {
+            orders = res.data;
+        } else if (res.error && (res.error.toLowerCase().includes("unauthorized") || res.error.toLowerCase().includes("token") || res.error.toLowerCase().includes("not found"))) {
+            redirect("/admin/signin");
+        }
     }catch(error){
+        if ((error as { digest?: string })?.digest?.startsWith("NEXT_REDIRECT")) {
+            throw error;
+        }
         console.log(error);
+    }
+    if (!Array.isArray(orders)) {
+        orders = [];
     }
     const totalRevenue = orders.reduce((acc:number,order:OrderSchema) => acc + Number(order.total_price),0);
     return (

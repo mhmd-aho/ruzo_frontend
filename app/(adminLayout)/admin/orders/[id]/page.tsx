@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import DeleteOrderModal from "@/components/app/delete-order-modal";
-import PrintBarcodeButton from "@/components/app/print-barcode-button";
+import { getOrderById } from "@/app/action";
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -16,15 +16,9 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     }
 
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/${id}`, {
-            headers: {
-                "Authorization": `Token ${token.value}`,
-            },
-            cache: "no-store",
-        });
-        const data = await res.json();
-        if (res.ok) {
-            order = data.data || data;
+        const res = await getOrderById(id);
+        if (res.success && res.data) {
+            order = res.data;
         }
     } catch (err) {
         console.error(err);
@@ -74,7 +68,6 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                         >
                             Back
                         </Link>
-                        <PrintBarcodeButton order={order} />
                         <DeleteOrderModal orderId={id} token={token.value} />
                     </div>
                 </div>
@@ -148,31 +141,39 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-muted text-sm text-black">
-                                {order.items?.map((item) => (
-                                    <tr key={item.id} className="hover:bg-neutral-50/70 transition-colors">
-                                        <td className="py-4 px-6">
-                                            <div className="flex flex-col">
-                                                <span className="font-boldonse uppercase tracking-wide text-xs text-black">
-                                                    {item.product_name || "Product Item"}
-                                                </span>
-                                                <span className="text-[11px] text-mid mt-1 font-semibold uppercase tracking-widest flex items-center gap-2">
-                                                    Size: {item.size_name || "OS"} 
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-neutral-300" />
-                                                    Color: {item.color_name || "Default"}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-6 text-center font-medium text-xs tracking-wider">
-                                            ${item.price}
-                                        </td>
-                                        <td className="py-4 px-6 text-center font-bold text-xs tracking-wider">
-                                            {item.quantity}
-                                        </td>
-                                        <td className="py-4 px-6 text-right font-boldonse text-xs tracking-wider text-primary">
-                                            ${(Number(item.price) * Number(item.quantity)).toFixed(2)}
-                                        </td>
-                                    </tr>
-                                )) || (
+                                {order.items && order.items.length > 0 ? (
+                                    order.items.map((item) => {
+                                        const name = item.product_variant?.product?.name || item.product_name || "Product Item";
+                                        const sizeName = item.product_variant?.size?.name || item.size_name || "OS";
+                                        const colorName = item.product_variant?.color?.name || item.color_name || "Default";
+                                        const price = Number(item.product_variant?.product?.price ?? item.price ?? 0);
+                                        return (
+                                            <tr key={item.id} className="hover:bg-neutral-50/70 transition-colors">
+                                                <td className="py-4 px-6">
+                                                    <div className="flex flex-col">
+                                                        <span className="font-boldonse uppercase tracking-wide text-xs text-black">
+                                                            {name}
+                                                        </span>
+                                                        <span className="text-[11px] text-mid mt-1 font-semibold uppercase tracking-widest flex items-center gap-2">
+                                                            Size: {sizeName} 
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-neutral-300" />
+                                                            Color: {colorName}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 px-6 text-center font-medium text-xs tracking-wider">
+                                                    ${price.toFixed(2)}
+                                                </td>
+                                                <td className="py-4 px-6 text-center font-bold text-xs tracking-wider">
+                                                    {item.quantity}
+                                                </td>
+                                                <td className="py-4 px-6 text-right font-boldonse text-xs tracking-wider text-primary">
+                                                    ${(price * Number(item.quantity)).toFixed(2)}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
                                     <tr>
                                         <td colSpan={4} className="py-8 text-center text-xs uppercase font-bold text-mid tracking-widest">
                                             No explicit item lines itemized in record.

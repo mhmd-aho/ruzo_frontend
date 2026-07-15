@@ -9,11 +9,14 @@ export default async function AdminProducts(){
     let products:ProductSchema[] = [];
     try {
         const data = await getAdminProducts();
-        if (data.success) {
+        if (data.success && Array.isArray(data.data)) {
             products = data.data;
         }
     } catch (error) {
         console.log(error);
+    }
+    if (!Array.isArray(products)) {
+        products = [];
     }
     return (
         <div className="flex flex-col justify-center items-center ">

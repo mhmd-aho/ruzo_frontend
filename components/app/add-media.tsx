@@ -40,18 +40,19 @@ export default function AddMedia({ product }: { product: ProductSchema }) {
         }
 
         startTransition(async () => {
-            const result = await createProductMedia(
-                product.id,
-                Number(selectedColor),
-                uploadedUrls[0]
-            );
-
-            if (result.success) {
-                toast.success("Media gallery assets registered successfully!");
-                router.replace(`/admin/products`);
-            } else {
-                toast.error(result.error || "Failed to associate uploaded media to backend parameters.");
+            for (const url of uploadedUrls) {
+                const result = await createProductMedia(
+                    product.id,
+                    Number(selectedColor),
+                    url
+                );
+                if (!result.success) {
+                    toast.error(result.error || "Failed to associate uploaded media to backend parameters.");
+                    return;
+                }
             }
+            toast.success("Media gallery assets registered successfully!");
+            router.replace(`/admin/products`);
         });
     };
 

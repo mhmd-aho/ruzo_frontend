@@ -25,16 +25,16 @@ export default function BestSeller({ initialProducts = [] }: BestSellerProps) {
     const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
+        if (initialProducts && initialProducts.length > 0) return;
         const getdata = async () => {
             const res = await getBestSellers();
-            if (res.success) {
+            if (res.success && res.data) {
                 setBestSellers(res.data);
             }
         };
-        if (bestSellers.length === 0) {
-            getdata();
-        }
-    }, [bestSellers]);
+        getdata();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const goTo = (index: number) => {
         const scrub = scrubRef.current;

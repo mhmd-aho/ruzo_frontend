@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import AdminHeader from "@/components/app/admin-header";
 export const metadata:Metadata = {
-    title: "Ruzo | Admin",
+    title: "AURA | Admin",
     description: "Admin Portal",
 };
 export default function Layout({children}: {children: React.ReactNode}) {

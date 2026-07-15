@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
 export const metadata: Metadata = {
-    title: "Ruzo | Order",
+    title: "AURA | Order",
     description: "Complete your order",
 };
 export default async function Page(){

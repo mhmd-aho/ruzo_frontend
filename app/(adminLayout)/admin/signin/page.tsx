@@ -36,7 +36,7 @@ export default function AdminSignIn(){
                 <div className="flex flex-col gap-1.5 text-center">
                     <h1 className="text-2xl font-boldonse uppercase tracking-wider text-black">Admin Access</h1>
                     <p className="text-xs text-mid uppercase font-semibold tracking-wider">
-                        Ruzo Administrative Portal
+                        AURA Administrative Portal
                     </p>
                 </div>
                 

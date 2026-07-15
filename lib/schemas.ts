@@ -60,25 +60,7 @@ export type CartItemSchema = {
     quantity: number;
     item_total: number;
 }
-export type areaSchema = {
-    district_id: number;
-    district_name: string;
-    governorate_id: number;
-    governorate_name: string;
-    id: number;
-    is_confirmation_required: boolean;
-    is_hidden: boolean;
-    latitude: number;
-    longitude: number;
-    name: string;
-    name_ar: string;
-    name_en: string;
-    office: {
-        code: string;
-        id: number;
-        name: string;
-    }
-} 
+
 
 export type CategorySchema = {
     id: number;
@@ -86,10 +68,12 @@ export type CategorySchema = {
 }
 export type OrderItemSchema = {
     id: number;
+    order?: number;
+    product_variant?: ProductVariantsSchema;
     product_name?: string;
     size_name?: string;
     color_name?: string;
-    price: number;
+    price?: number;
     quantity: number;
 }
 export type OrderSchema = {
@@ -99,7 +83,7 @@ export type OrderSchema = {
     total_price: number;
     items: OrderItemSchema[];
     address: z.infer<typeof AddressFormSchema>;
-    barcode: string;
+    barcode?: string;
 }
 export type ProductInputSchema = {
     name: string;

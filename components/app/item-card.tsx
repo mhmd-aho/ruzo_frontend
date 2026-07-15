@@ -3,6 +3,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { ProductSchema, ProductVariantsSchema,ColorSchema } from "@/lib/schemas";
 import { getOptimizedImageUrl } from "@/lib/utils";
+import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 type Props = {
     product: ProductSchema
     admin:boolean
@@ -24,9 +29,18 @@ export default function ItemCard({product,admin,priority = false}: Props) {
             setIsLoading(false);
         }
     };
+    const container = useRef(null);
+    useGSAP(()=>{
+        gsap.from(container.current,{opacity:0,y:20,duration:.5,scrollTrigger:{
+            trigger:container.current,
+            start:"top 80%",
+            end:"bottom 20%",   
+        }})
+    },[container])
 
     return (
         <Link 
+            ref={container}
             href={`${admin ? `/admin/products/edit/${product.id}` : `/collections/product/${product.id}`} `} 
             className="lg:h-[540px] h-[200px] lg:w-[392px] sm:h-[400px] sm:w-[250px] max-sm:w-[170px] flex flex-col items-start gap-3"
         >

@@ -3,8 +3,7 @@ import Input from "@/components/input/text-input";
 import BackArrow from "@/components/svg/back-arrow";
 import { useForm,Controller } from "react-hook-form";
 import { useEffect, useState,useTransition } from "react";
-import {getWakilniAreas} from "@/app/action";
-import { areaSchema,AddressFormSchema  } from "@/lib/schemas";
+import {AddressFormSchema  } from "@/lib/schemas";
 import {zodResolver} from "@hookform/resolvers/zod"
 import { placeOrder } from "@/app/action";
 import { z } from "zod";
@@ -14,17 +13,112 @@ import { useRouter } from "next/navigation";
 type addressFormType = z.infer<typeof AddressFormSchema>
 export default function AddressForm(){
   const [isPending,startTransition] = useTransition();
-  const [areas,setAreas] = useState<areaSchema[]>([]);
+  const areas = [
+    'kuwait',
+    'iraq',
+    'syria',
+    'lebanon',
+    'jordan',
+    'palestine',
+    'egypt',
+    'saudi arabia',
+    'qatar',
+    'bahrain',
+    'oman',
+    'uae',
+    'yemen',
+    'tunisia',
+    'algeria',
+    'libya',
+    'morocco',
+    'mauritania',
+    'somalia',
+    'djibouti',
+    'eritrea',
+    'ethiopia',
+    'sudan',
+    'south sudan',
+    'chad',
+    'niger',
+    'mali',
+    'burkina faso',
+    'senegal',
+    'gambia',
+    'guinea',
+    'guinea-bissau',
+    'sierra leone',
+    'liberia',
+    'côte d\'ivoire',
+    'ghana',
+    'togo',
+    'benin',
+    'nigeria',
+    'cameroon',
+    'central african republic',
+    'south sudan',
+    'dr congo',
+    'republic of congo',
+    'gabon',
+    'equatorial guinea',
+    'são tomé and príncipe',
+    'angola',
+    'zambia',
+    'zimbabwe',
+    'mozambique',
+    'malawi',
+    'madagascar',
+    'mauritius',
+    'seychelles',
+    'comoros',
+    'tanzania',
+    'kenya',
+    'uganda',
+    'rwanda',
+    'burundi',
+    'somalia',
+    'djibouti',
+    'eritrea',
+    'ethiopia',
+    'south sudan',
+    'chad',
+    'niger',
+    'mali',
+    'burkina faso',
+    'senegal',
+    'gambia',
+    'guinea',
+    'guinea-bissau',
+    'sierra leone',
+    'liberia',
+    'côte d\'ivoire',
+    'ghana',
+    'togo',
+    'benin',
+    'nigeria',
+    'cameroon',
+    'central african republic',
+    'south sudan',
+    'dr congo',
+    'republic of congo',
+    'gabon',
+    'equatorial guinea',
+    'são tomé and príncipe',
+    'angola',
+    'zambia',
+    'zimbabwe',
+    'mozambique',
+    'malawi',
+    'madagascar',
+    'mauritius',
+    'seychelles',
+    'comoros',
+    'tanzania',
+    'kenya',
+    'uganda',
+    'rwanda',
+    'burundi',
+  ]
   const router = useRouter();
-   useEffect(() => {
-      const getAreas = async () => {
-         const result = await getWakilniAreas();
-         if(result.success){
-            setAreas(result.data);
-         }
-      }
-      getAreas();
-   },[])
     const form = useForm({
       resolver: zodResolver(AddressFormSchema),
       mode: "onSubmit",
@@ -119,7 +213,7 @@ export default function AddressForm(){
                     <select {...field} id="receiver_area" name="receiver_area" className={`border-2 ${fieldState.error?.message ? 'border-red-500' : 'border-mid'} h-12 w-full p-2 bg-transparent outline-none cursor-pointer`}>
                       <option value="">Area</option>
                       {areas.map((area) => (
-                          <option key={area.id} value={area.name}>{area.name}</option>
+                          <option key={area} value={area}>{area}</option>
                       ))}
                   </select>
                   {fieldState.error?.message && <p className="text-red-500 text-xs mt-1">{fieldState.error.message}</p>}

@@ -3,12 +3,11 @@ import Filters from "@/components/app/filters";
 import { ProductSchema } from "@/lib/schemas";
 import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 import { Metadata } from "next";
-import { getOptimizedImageUrl } from "@/lib/utils";
 import Pagination from "@/components/app/pagination";
 
 export const metadata:Metadata = {
-    title: "Ruzo | Collections",
-    description: "Discover the best collections at Ruzo",
+    title: "AURA | Collections",
+    description: "Discover the best collections at AURA",
 };
 export default async function Collections({
     searchParams,
@@ -55,8 +54,8 @@ export default async function Collections({
         <main className="h-fit w-full flex flex-col lg:gap-12 gap-4">
             <section className="h-[calc(100vh-48px)] lg:h-[calc(100vh-80px)] relative">
                 <img 
-                    src={getOptimizedImageUrl("https://3yrpgg4xvr.ucarecd.net/3d5106d6-cbc8-40b3-bae8-f78d096665e1/0B7A7879copy.webp", 1600, 1000, "preview")} 
-                    alt="The Solis Draped" 
+                    src="/collections-hero.png" 
+                    alt="AURA Collections Hero" 
                     className="absolute top-0 left-0 w-full h-full object-center object-cover" 
                     decoding="async"
                     loading="eager"

@@ -12,7 +12,6 @@ interface DeleteOrderModalProps {
 
 export default function DeleteOrderModal({ orderId, token }: DeleteOrderModalProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [reason, setReason] = useState("");
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
 
@@ -20,7 +19,7 @@ export default function DeleteOrderModal({ orderId, token }: DeleteOrderModalPro
         e.preventDefault();
         startTransition(async () => {
             try {
-                const res = await deleteOrder(orderId, reason);
+                const res = await deleteOrder(orderId);
                 if (res.success) {
                     toast.success("Order deployment cancelled successfully.");
                     setIsOpen(false);
@@ -62,35 +61,24 @@ export default function DeleteOrderModal({ orderId, token }: DeleteOrderModalPro
 
                         <form onSubmit={handleDelete} className="flex flex-col gap-5">
                             <div className="flex flex-col">
-                                <label className="text-[11px] font-bold uppercase tracking-wider text-mid mb-1.5">
-                                    System Cancellation Validation Reason
-                                </label>
-                                <textarea
-                                    value={reason}
-                                    onChange={(e) => setReason(e.target.value)}
-                                    placeholder="Provide detailed logs explaining operational constraint parameters..."
-                                    required
-                                    disabled={isPending}
-                                    rows={4}
-                                    className="border border-muted p-3 w-full bg-white text-black outline-none focus:border-primary transition-colors text-sm rounded-none resize-none placeholder:text-neutral-300"
-                                />
+                                <p className="text-black text-md">Are you sure you want to cancel this order?</p>
                             </div>
 
-                            <div className="flex items-center justify-end gap-3 pt-2 border-t border-neutral-100">
+                            <div className="flex items-center justify-end gap-3 pt-2">
                                 <button
                                     type="button"
                                     disabled={isPending}
                                     onClick={() => setIsOpen(false)}
                                     className="px-5 h-11 border border-muted text-black hover:bg-neutral-50 text-xs uppercase tracking-widest font-bold rounded-none cursor-pointer disabled:opacity-50 transition-colors"
                                 >
-                                    Abort
+                                    Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={!reason.trim() || isPending}
+                                    disabled={isPending}
                                     className="px-5 h-11 bg-primary text-white hover:bg-black text-xs uppercase tracking-widest font-bold rounded-none cursor-pointer disabled:opacity-30 transition-all"
                                 >
-                                    Confirm Purge
+                                    Confirm
                                 </button>
                             </div>
                         </form>

@@ -15,8 +15,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Ruzo",
-  description: "Discover the best collections at Ruzo",
+  title: "AURA | Contemporary Apparel",
+  description: "Discover the best collections at AURA — where confidence meets minimalist style.",
 };
 
 export default function RootLayout({

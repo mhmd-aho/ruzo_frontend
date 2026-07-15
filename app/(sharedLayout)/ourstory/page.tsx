@@ -7,8 +7,8 @@ import OurStoryLogo from "@/components/svg/ourstory-logo";
 import VerticalLogo from "@/components/svg/vertical-logo";
 
 export const metadata:Metadata = {
-    title: "Ruzo | Our Story",
-    description: "Discover the story of Ruzo and our commitment to quality and style.",
+    title: "AURA | Our Story",
+    description: "Discover the story of AURA and our commitment to quality and style.",
 };
 
 export default function OurStory() {
@@ -27,14 +27,14 @@ export default function OurStory() {
                     <h2 className="text-2xl lg:text-4xl font-boldonse">Our story</h2>
                     <div className="text-mid lg:text-xl text-sm font-montserrat flex flex-col gap-5 leading-relaxed">
                         <p>
-                            RUZO was born from a simple belief: confidence starts with what you wear.
+                            AURA was born from a simple belief: confidence starts with what you wear.
                             What began as a passion for fashion and timeless style grew into a brand dedicated to creating pieces that make women feel powerful, comfortable, and effortlessly elegant. We wanted to move beyond fast-changing trends and focus on clothing that remains relevant, season after season.
                         </p>
                         <p>
-                            At RUZO, every collection is designed with attention to detail, quality fabrics, and modern silhouettes that celebrate individuality. Our goal is not just to create clothing, but to create confidence—pieces that become part of your everyday story.
+                            At AURA, every collection is designed with attention to detail, quality fabrics, and modern silhouettes that celebrate individuality. Our goal is not just to create clothing, but to create confidence—pieces that become part of your everyday story.
                         </p>
                         <p>
-                            More than a fashion brand, RUZO is a statement of self-expression. A brand for women who embrace their identity, pursue their ambitions, and wear confidence wherever they go.
+                            More than a fashion brand, AURA is a statement of self-expression. A brand for women who embrace their identity, pursue their ambitions, and wear confidence wherever they go.
                         </p>
                     </div>
                 </div>

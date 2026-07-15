@@ -6,30 +6,30 @@ export default async function HomePageCollection({ name }: { name: string }) {
     [key: string]: { image: string; link: string; name: string; className: string,imgClass:string } 
   } = {
     dresses: {
-      image: 'https://3yrpgg4xvr.ucarecd.net/543ea717-5e18-4e18-a684-357f925cc86f/0B7A7815copy.webp',
+      image: 'https://3yrpgg4xvr.ucarecd.net/3eb3e8de-8aee-43e5-bcf3-ce8e3ce1492c/Gemini_Generated_Image_ihjm5jihjm5jihjm.png',
       link: '/collections/?category=Dresses',
       name: 'Dresses',
       className: 'col-span-1 lg:col-start-1 lg:col-end-3 lg:row-start-1 row-span-1 rounded-[10px] overflow-hidden relative flex justify-center items-end lg:pb-10 pb-3.5',
       imgClass: "w-full h-full object-cover object-center"
     },
     tops: {
-      image: 'https://3yrpgg4xvr.ucarecd.net/1434cbe7-1c2f-4568-828d-4d6af7228dea/0B7A8157copy.webp',
+      image: 'https://3yrpgg4xvr.ucarecd.net/c05840a1-0315-4c2b-889c-a6d246dfd0fc/Gemini_Generated_Image_l0yt52l0yt52l0yt.png',
       link: '/collections/?category=Tops',
       name: 'Tops',
       className: 'col-span-1 lg:row-span-1 lg:col-start-2 lg:row-start-2 row-span-2 rounded-[10px] overflow-hidden relative flex justify-center items-end lg:pb-10 pb-3.5',
       imgClass: "w-full h-full object-cover object-[50%_20%] scale-150"
     },
     sets: {
-      image: 'https://3yrpgg4xvr.ucarecd.net/c7f91348-98b5-4da0-8c9c-f7ca08093002/0B7A7981copy.webp',
+      image: 'https://3yrpgg4xvr.ucarecd.net/c05840a1-0315-4c2b-889c-a6d246dfd0fc/Gemini_Generated_Image_l0yt52l0yt52l0yt.png',
       link: '/collections/?category=Sets',
       name: 'Sets',
       className: 'col-span-1 lg:col-start-3  lg:row-span-2 row-span-2 rounded-[10px] overflow-hidden relative flex justify-center items-end lg:pb-10 pb-3.5',
       imgClass: "w-full h-full object-cover object-center"
     },
     pants: {
-      image: 'https://3yrpgg4xvr.ucarecd.net/1434cbe7-1c2f-4568-828d-4d6af7228dea/0B7A8157copy.webp',
-      link: '/collections/?category=Pants',
-      name: 'Pants',
+      image: 'https://3yrpgg4xvr.ucarecd.net/7f17b57a-8288-4d4c-ab2c-a8cbbe88c136/Gemini_Generated_Image_n2ndvtn2ndvtn2ndc.png',
+      link: '/collections/?category=Skirts',
+      name: 'Skirts',
       className: 'col-span-1 lg:col-start-1 row-span-1 rounded-[10px] overflow-hidden relative flex justify-center items-end lg:pb-10 pb-3.5',
       imgClass: "w-full h-full object-cover object-bottom scale-150"
     }

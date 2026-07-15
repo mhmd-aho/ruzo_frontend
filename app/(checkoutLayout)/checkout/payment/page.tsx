@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import { getOptimizedImageUrl } from "@/lib/utils";
 
 export const metadata: Metadata = {
-    title: "Ruzo | Payment",
+    title: "AURA | Payment",
     description: "Complete your payment",
 };
 export default async function Payment() {

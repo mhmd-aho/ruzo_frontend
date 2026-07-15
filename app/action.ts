@@ -1,6 +1,6 @@
 "use server"
 import { cookies } from "next/headers";
-import { AddressFormSchema, AdminSignInSchema, ProductInputSchema, ProductVaraintInputSchema } from "@/lib/schemas";
+import { AddressFormSchema, AdminSignInSchema, OrderSchema, ProductInputSchema, ProductVaraintInputSchema } from "@/lib/schemas";
 import { CACHE_TAGS, withCacheTags } from "@/lib/cache-tags";
 import { revalidateCartCache, revalidateOrderCaches, revalidateProductCaches } from "@/lib/revalidate";
 import { z } from "zod";
@@ -153,21 +153,7 @@ export const updateCartItemQuantity = async (id: number, action: 'increase' | 'd
     };
 }
 
-// get wakilni areas
-export const getWakilniAreas = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/get-areas/`, {
-        method: "GET",
-        headers: { 
-            "Content-Type": "application/json",
-        },
-        ...withCacheTags(CACHE_TAGS.areas),
-    });
-    const data = await res.json();
-    if(!res.ok){
-        return {success:false,error:data.error || "Failed to get areas"};
-    }
-    return {success:true,data:data.data};
-}
+
 export const placeOrder = async (data: addressFormType) =>{
     const cookieStore = await cookies();
     const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
@@ -185,7 +171,7 @@ export const placeOrder = async (data: addressFormType) =>{
     }
     revalidateCartCache();
     revalidateOrderCaches();
-    return {success:true,message:result.message || "Order placed successfully"};
+    return {success:true,message:result.message || "Order placed successfully", order_id: result.order_id};
 }
 export const getCategories = async () => {
     try {
@@ -464,7 +450,7 @@ export const updateProduct = async (id:number, data:ProductInputSchema) => {
     revalidateProductCaches(id);
     return {success:true,data:result};
 }
-export const deleteOrder = async (orderId:string,reason:string) => {
+export const deleteOrder = async (orderId:string) => {
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token")?.value;
     if(!token){
@@ -476,9 +462,12 @@ export const deleteOrder = async (orderId:string,reason:string) => {
             "Content-Type": "application/json",
             "Accept": "application/json",
             "Authorization": `Token ${token}`,
-        },
-        body: JSON.stringify({ reason }),
-    })
+        }
+    });
+    if (res.status === 204) {
+        revalidateOrderCaches(orderId);
+        return {success:true, data: {message: "order deleted"}};
+    }
     const result = await res.json();
     if(!res.ok){
         return {success:false,error:result.error || "Failed to delete order"};
@@ -486,6 +475,55 @@ export const deleteOrder = async (orderId:string,reason:string) => {
     revalidateOrderCaches(orderId);
     return {success:true,data:result};
 }
+
+export const getOrders = async () => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if(!token){
+        return {success:false,error:"Admin token not found"};
+    }
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/`,{
+            method: "GET",
+            headers: {
+                "Authorization": `Token ${token}`,
+            },
+            cache: "no-store",
+        });
+        const result = await res.json();
+        if(!res.ok){
+            return {success:false,error:result.error || "Failed to fetch orders"};
+        }
+        return {success:true,data:result as OrderSchema[]};
+    } catch {
+        return {success:false,error:"Network error fetching orders"};
+    }
+}
+
+export const getOrderById = async (orderId:string) => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("admin_token")?.value;
+    if(!token){
+        return {success:false,error:"Admin token not found"};
+    }
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/${orderId}/`,{
+            method: "GET",
+            headers: {
+                "Authorization": `Token ${token}`,
+            },
+            cache: "no-store",
+        });
+        const result = await res.json();
+        if(!res.ok){
+            return {success:false,error:result.error || "Failed to fetch order"};
+        }
+        return {success:true,data:(result.data || result) as OrderSchema};
+    } catch {
+        return {success:false,error:"Network error fetching order details"};
+    }
+}
+
 export const logout = async () => {
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token")?.value;
@@ -541,29 +579,6 @@ export async function createProductMedia(productId: number, colorId: number, med
     }
 }
 
-export const closeBulk = async () => {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("admin_token")?.value;
-    if(!token){
-        return {success:false,error:"Admin token not found"};
-    }
-    try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}order/close-bulk/`, {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Authorization": `Token ${token}`,
-            },
-        });
-        const result = await res.json();
-        if(!res.ok){
-            return {success:false,error:result.error || result.message || "Failed to close bulk session"};
-        }
-        return {success:true,message:result.message || "Bulk session successfully closed.", bulk_id: result.bulk_id};
-    } catch {
-        return {success:false,error:"Failed to close bulk session due to network error."};
-    }
-}
 export const createCategory = async (name: string) => {
     const cookieStore = await cookies();
     const token = cookieStore.get("admin_token")?.value;

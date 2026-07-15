@@ -7,7 +7,7 @@ export default function ProductLoading() {
                     {/* Left: Product Gallery Skeleton */}
                     <div className="lg:w-1/2 w-full lg:h-full h-[500px] flex flex-col-reverse lg:flex-row gap-5 items-center justify-between select-none pointer-events-none">
                         {/* Thumbnails list */}
-                        <div className="flex lg:flex-col flex-row gap-3 h-fit lg:h-full w-full lg:w-20 overflow-x-auto lg:overflow-y-auto shrink-0 justify-center">
+                        <div className="flex lg:flex-col flex-row gap-3 h-fit lg:h-full w-full lg:w-20 overflow-x-auto lg:overflow-y-auto shrink-0 justify-center max-lg:hidden">
                             {[1, 2, 3, 4].map((i) => (
                                 <div key={i} className="h-20 w-16 lg:h-28 lg:w-20 bg-neutral-100 animate-pulse rounded" />
                             ))}
