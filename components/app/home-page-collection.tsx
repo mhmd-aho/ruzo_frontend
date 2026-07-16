@@ -14,14 +14,14 @@ export default async function HomePageCollection({ name }: { name: string }) {
     },
     tops: {
       image: 'https://3yrpgg4xvr.ucarecd.net/c05840a1-0315-4c2b-889c-a6d246dfd0fc/Gemini_Generated_Image_l0yt52l0yt52l0yt.png',
-      link: '/collections/?category=Tops',
+      link: '/collections/?category=Loungewear Sets',
       name: 'Tops',
       className: 'col-span-1 lg:row-span-1 lg:col-start-2 lg:row-start-2 row-span-2 rounded-[10px] overflow-hidden relative flex justify-center items-end lg:pb-10 pb-3.5',
       imgClass: "w-full h-full object-cover object-[50%_20%] scale-150"
     },
     sets: {
       image: 'https://3yrpgg4xvr.ucarecd.net/c05840a1-0315-4c2b-889c-a6d246dfd0fc/Gemini_Generated_Image_l0yt52l0yt52l0yt.png',
-      link: '/collections/?category=Sets',
+      link: '/collections/?category=Loungewear Sets',
       name: 'Sets',
       className: 'col-span-1 lg:col-start-3  lg:row-span-2 row-span-2 rounded-[10px] overflow-hidden relative flex justify-center items-end lg:pb-10 pb-3.5',
       imgClass: "w-full h-full object-cover object-center"

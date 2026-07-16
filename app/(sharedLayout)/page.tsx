@@ -27,7 +27,7 @@ export default async function Home() {
     <main className="h-fit w-full relative  flex flex-col gap-10">
       <section className="flex justify-start  lg:h-[calc(100vh-80px)] h-[calc(100vh-48px)] w-full relative pl-10">
         <div className="h-full w-full absolute top-0 left-0 ">
-          <Image src="/hero-aura.png" alt="AURA Contemporary Apparel Collection" className="h-full w-full object-cover object-center"/>
+          <Image fill decoding="async" loading="eager" fetchPriority="high" src="/hero-aura.png" alt="AURA Contemporary Apparel Collection" className="h-full w-full object-cover object-center"/>
         </div>
         <HeroTitle/>
       </section>
